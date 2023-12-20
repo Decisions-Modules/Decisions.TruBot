@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ExportDescription xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>TruCap+</Name>
+  <ParentFolderId>COMPONENTS FOLDER</ParentFolderId>
+  <ParentFolderPath>Designers/System/Catalog</ParentFolderPath>
+  <TypeName>DecisionsFramework.ServiceLayer.Services.Folder.Folder</TypeName>
+  <ShortTypeName>Designer Folder</ShortTypeName>
+  <Id>01H9JVVYW5HF8G2ZK565NKY2MB</Id>
+  <ExportedBy>admin@decisions.com</ExportedBy>
+  <ExportedOn>2023-10-03T10:52:07.8245848-04:00</ExportedOn>
+  <PlatformVersion>8.16.0.72503</PlatformVersion>
+  <DependsOn />
+  <DependsOnAssemblies />
+  <StructureImport>false</StructureImport>
+  <DependsOnStructures>false</DependsOnStructures>
+  <Size>755</Size>
+  <Data>SnNvblN0b3JhZ2VQSwMEFAAACAgAg1ZDV3EMcZNwAgAAXgQAAAsAAABKc29uU3RvcmFnZWxS227iMBD9lSgvfVgK4SrClkqQhJaWEFQiKlaVViYZiLeOjWyHbrbqv6+dC3S1zUOsOTNzZubMvJuWOXo3N/r3MwxWwfTBc0JzZDWUuV15y4nvmSPThQgLzKiYcZTCG+OvzTXwE45ggXLgtSGaM0ZiZZdPw/g/r2FsgGtoPGy2B02raTUMJyMy4zCmkEmOSMNYZTuCo0fIQ/YKdEwzQsyGuS9I567qx2rf2w+bzfa5fz8b3nV+PPYH/eXjtuNPz3FTSNAJMx7mR/h6AhcEPtDqAb7i7BdEsmxd0YiEvc1pyEGnSw1kOx9oVhMXpHukele+CNEpPDEmFbo/96BrL1W5IrSsYpz5y5CAa0tNpBBME+BYroCnWBTNVpUpCInpYQEnIArq6WylyQrJ5BO1aK1zISFtOUgiwg6tkGcOOn7TzKJ0VcXLHgVEmSqXl+A8VvBsETwb/mQ5ufN8bxkas2Dhek8lwT/RFUWCxDrblZCosCjBJOZA79EJ6qTKhWjuVF6XLZn8IkQzHtWu9hjiDYa3GsZxDLSmiVNMsVC3IhnXQQEldT5QeRlJn4oT+KtgqYZZX6Ypg6rNXFQqYSVnxPFRKv2V9yaRKbm9SQDFtzet8tmxODeEzAmMX9QaqbzeoxSTfGRcTThG5Oq7UaAC/4GR0e4cf7+YKlmnaQ5NqHXigCTEAXXVoyoNusOO3bcGvUGv3e1aHVufRMriQopLTLfds2y717GHtm11rQvRVEuw3q5Dz/+UWKDXl0/Lx9WKThDXalZmVUIzIkJCdBAKQQpRgAsE5DmjsgJa363wYiwddiyX8NEw9TFZHx9/BRBgAFBLAQIzABQAAAgIAINWQ1dxDHGTcAIAAF4EAAALAAAAAAAAAAAAAAAAAAAAAABKc29uU3RvcmFnZVBLBQYAAAAAAQABADkAAACZAgAAAAA=</Data>
+  <RequiresApproval>false</RequiresApproval>
+  <OverridingImport>false</OverridingImport>
+  <ModuleName>Decisions.TruCap</ModuleName>
+  <ImportOrder>104</ImportOrder>
+  <ModifiedOn>2023-09-27T11:12:22.989903</ModifiedOn>
+  <BehaviorTypeName>DecisionsFramework.Design.DesignerProjectFolder</BehaviorTypeName>
+  <AllTagsData />
+  <TagData />
+</ExportDescription>

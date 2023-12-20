@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ExportDescription xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>TruCap+</Name>
+  <ParentFolderId>SERVICE CATALOG FOLDER</ParentFolderId>
+  <ParentFolderPath>Applications/System/Workflow Catalog</ParentFolderPath>
+  <TypeName>DecisionsFramework.ServiceLayer.Services.Folder.Folder</TypeName>
+  <ShortTypeName>Folder</ShortTypeName>
+  <Id>01H9JWJX1DR8JE1TT1KNK3BYVP</Id>
+  <ExportedBy>admin@decisions.com</ExportedBy>
+  <ExportedOn>2023-10-03T10:52:07.7551545-04:00</ExportedOn>
+  <PlatformVersion>8.16.0.72503</PlatformVersion>
+  <DependsOn />
+  <DependsOnAssemblies />
+  <StructureImport>false</StructureImport>
+  <DependsOnStructures>false</DependsOnStructures>
+  <Size>752</Size>
+  <Data>SnNvblN0b3JhZ2VQSwMEFAAACAgAg1ZDV08jD05tAgAAggQAAAsAAABKc29uU3RvcmFnZZRS227aQBD9FcsveSgBm0sINEQC2zQQghFYpJEiRQse4lWWXWt3DXWj/HtnsYGm7Ut5YD1n5py5vtuO3X23l+bvJQpn4WAceJHddSpoPs2Caf8hsLu2D2uqqOBqKMkW9kK+VRcgd3QNE5KDPBqqOhQsRrt4KtbfvIq1BGmg3nXVvao6VadieRnTmYQeh0xLwirWLFsxur6HPBJvwHs8Y8yu2JuD6MjHehz3rjN+HH93/fn1OHCjyL2f3jcGT8vZKW4ACdlRIaM8hf/poPzwiCZMvP5hDj9JYy6ViP2IRxJMDm2AbPUAPDuFmMwbgg2ib034AOZCaEQ3p0JNgVOsCcFC/uQJpbGwW0QoT0BSPQO5perQSJmQg9KUv05gBwyhpmHjvGZEJ2j20xQnSbQh1Ba50rCtPWLzGyb2VtlULZKZR9IvJosqYspCijIVrDNMnRfgKEZ48bSIggdrGE78YF7wPgWVzISoRbYqIFVi64SyWAK/Izs4kkoX4blXen0xFfofIUYxxVVuKMRLCvsjTOMY+FEm3lJOFZ6SFtIEhZwd+cD1uRNzSYtgvhx5geX1o/4k/HZuqYgsF3OeUAH7oNaSpmas6L1J9Jbd3iRA4tubWvGsRJxbSucMes+4Tq4vN2RLWd61LvqSEnbx1Tqgiv6EruXW0x/PNpINzWgYQTMsCURDHHIfH8x01biud1pOu+62Om67026b09iK+DCPc0zDbTqdTrPhtJpOveWchQb5aXm/EQ/o5flnZihxTzuIjyMtzTKFUSSMReRVIUIQQcAHBvrEKK2QH+9XBTHVnkiLTXxUbHNIzsfHLwEGAFBLAQIzABQAAAgIAINWQ1dPIw9ObQIAAIIEAAALAAAAAAAAAAAAAAAAAAAAAABKc29uU3RvcmFnZVBLBQYAAAAAAQABADkAAACWAgAAAAA=</Data>
+  <RequiresApproval>false</RequiresApproval>
+  <OverridingImport>false</OverridingImport>
+  <ModuleName>Decisions.TruCap</ModuleName>
+  <ImportOrder>104</ImportOrder>
+  <ModifiedOn>2023-09-27T11:12:23.054025</ModifiedOn>
+  <BehaviorTypeName>DecisionsFramework.ServiceLayer.Services.ServiceCatalog.ServiceCatalogFolderBehavior</BehaviorTypeName>
+  <AllTagsData />
+  <TagData />
+</ExportDescription>
