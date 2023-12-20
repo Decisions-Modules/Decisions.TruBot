@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using DecisionsFramework;
@@ -28,7 +29,7 @@ public class TruBotSettings : AbstractModuleSettings, IInitializable, INotifyPro
     }
     
     [ORMField]
-     private string baseUrl = "http://serveraddress/CockpitPublicWebApi/api";
+     private string baseUrl = "http://localhost:56498/CockpitPublicWebApi/api";
 
      [PropertyClassification(0, "Base URL", "TruBot Settings")]
      [DataMember]

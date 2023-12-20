@@ -1,3 +1,4 @@
+using System.Net.Http;
 using System.Runtime.Serialization;
 using DecisionsFramework.Design.ConfigurationStorage.Attributes;
 
