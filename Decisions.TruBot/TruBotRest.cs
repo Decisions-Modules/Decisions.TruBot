@@ -1,18 +1,18 @@
-using System.Net.Http;
-using System.Threading.Tasks;
 using Decisions.TruBot.Data;
 
 namespace Decisions.TruBot;
 
 public class TruBotRest
 {
-    public static string TruBotGet(string url, TruBotAuthentication authentication)
+    public static string TruBotGet(string url, TruBotAuthentication authentication, StringContent? content)
     {
         HttpClient client = new HttpClient();
         
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
         request.Headers.Add("sid", authentication.sid);
         request.Headers.Add("Authorization", $"Bearer {authentication.token}");
+        
+        request.Content = content;
         
         HttpResponseMessage response = client.Send(request);
         response.EnsureSuccessStatusCode();

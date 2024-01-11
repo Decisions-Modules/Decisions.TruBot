@@ -1,7 +1,4 @@
-using System;
-using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using Decisions.TruBot.Api;
 using DecisionsFramework;
 using DecisionsFramework.Design.Flow;
@@ -18,7 +15,7 @@ namespace Decisions.TruBot.Steps
         public AuthenticationResponse Login(
             [PropertyClassification(0, "Username", "Credentials")]string username,
             [PropertyClassification(1, "Password", "Credentials")]string password,
-            [PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
+            [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             if (string.IsNullOrEmpty(username))
                 throw new ArgumentNullException(username);

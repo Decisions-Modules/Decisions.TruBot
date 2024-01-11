@@ -1,4 +1,3 @@
-using System;
 using Decisions.TruBot.Api;
 using Decisions.TruBot.Data;
 using DecisionsFramework;
@@ -14,7 +13,7 @@ namespace Decisions.TruBot.Steps
     public class BotSteps
     {
         public TruBotResponse RunBot(TruBotAuthentication authentication, int botId,
-            [PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
+            [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             if (botId == null)
             {
@@ -25,9 +24,10 @@ namespace Decisions.TruBot.Steps
 
             try
             {
-                string result = TruBotRest.TruBotGet(
-                    $"{baseUrl}/RunBot/{botId}",
-                    authentication);
+                StringContent? content = new StringContent(
+                    "{\"BotId\":" + botId + "}", null, "application/json");
+                
+                string result = TruBotRest.TruBotGet($"{baseUrl}/RunBot/{botId}", authentication, content);
                 
                 return TruBotResponse.JsonDeserialize(result);
             }
@@ -38,7 +38,7 @@ namespace Decisions.TruBot.Steps
         }
         
         public JobStatusResponse GetJobStatus(TruBotAuthentication authentication, string jobExecutionId, int jobId,
-            [PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
+            [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             if (string.IsNullOrEmpty(jobExecutionId))
             {
@@ -54,9 +54,11 @@ namespace Decisions.TruBot.Steps
 
             try
             {
-                string result = TruBotRest.TruBotGet(
-                    $"{baseUrl}/GetJobStatus/JobExecutionId/{jobExecutionId}/JobId/{jobId}",
-                    authentication);
+                StringContent? content = new StringContent(
+                    "{\"JobExecutionId\": \"" + jobExecutionId +
+                    ",\"JobId\":" + jobId + "}", null, "application/json");
+                
+                string result = TruBotRest.TruBotGet($"{baseUrl}/GetJobStatus", authentication, content);
                 
                 return JobStatusResponse.JsonDeserialize(result);
             }
@@ -67,20 +69,21 @@ namespace Decisions.TruBot.Steps
         }
         
         public JobDetailsResponse GetJobDetails(TruBotAuthentication authentication, DateTime fromInitiationDateTime, DateTime toInitiationDateTime, int botId,
-            [PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
+            [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
-            if (botId == null)
-            {
-                throw new BusinessRuleException("botId cannot be null.");
-            }
-
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(overrideBaseUrl);
 
             try
             {
-                string result = TruBotRest.TruBotGet(
-                    $"{baseUrl}/GetJobDetails/FromInitiationDateTime/{fromInitiationDateTime}/ToInitiationDateTime/{toInitiationDateTime}/BotId/{botId}",
-                    authentication);
+                StringContent? content = (botId != null) ? new StringContent(
+                    "{\"FromInitiationDateTime\": \"" + fromInitiationDateTime +
+                    "\",\"ToInitiationDateTime\":" + toInitiationDateTime +
+                    ",\"BotId\":" + botId + "}", null, "application/json")
+                    
+                    : new StringContent("{\"FromInitiationDateTime\": \"" + fromInitiationDateTime + 
+                        "\",\"ToInitiationDateTime\":" + toInitiationDateTime + "}",null, "application/json");
+                
+                string result = TruBotRest.TruBotGet($"{baseUrl}/GetJobDetails", authentication, content);
                 
                 return JobDetailsResponse.JsonDeserialize(result);
             }
@@ -91,7 +94,7 @@ namespace Decisions.TruBot.Steps
         }
         
         public BotVariablesValuesResponse GetBotVariablesValues(TruBotAuthentication authentication, string jobExecutionId, int botId, int jobId,
-            [PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
+            [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             if (string.IsNullOrEmpty(jobExecutionId))
             {
@@ -112,9 +115,11 @@ namespace Decisions.TruBot.Steps
 
             try
             {
-                string result = TruBotRest.TruBotGet(
-                    $"{baseUrl}/JobExecutionId/{jobExecutionId}/BotId/{botId}/JobId/{jobId}",
-                    authentication);
+                StringContent? content = new StringContent(
+                        "{\"JobExecutionId\": \"" + jobExecutionId + "\", \"BotId\": " + botId +
+                        ",\"JobId\": " + jobId + "}", null, "application/json");
+                
+                string result = TruBotRest.TruBotGet($"{baseUrl}", authentication, content);
                 
                 return BotVariablesValuesResponse.JsonDeserialize(result);
             }
@@ -125,7 +130,7 @@ namespace Decisions.TruBot.Steps
         }
         
         public ProcessInformationResponse GetProcessInformationByName(TruBotAuthentication authentication, string processName,
-            [PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
+            [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             if (string.IsNullOrEmpty(processName))
             {
@@ -136,9 +141,10 @@ namespace Decisions.TruBot.Steps
 
             try
             {
-                string result = TruBotRest.TruBotGet(
-                    $"{baseUrl}/ProcessName/{processName}",
-                    authentication);
+                StringContent? content = new StringContent(
+                    "{\"ProcessName\": " + processName + "}", null, "application/json");
+                
+                string result = TruBotRest.TruBotGet($"{baseUrl}", authentication, content);
                 
                 return ProcessInformationResponse.JsonDeserialize(result);
             }
@@ -149,7 +155,7 @@ namespace Decisions.TruBot.Steps
         }
         
         public ProcessInformationResponse GetProcessInformationByBotId(TruBotAuthentication authentication, int botId,
-            [PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
+            [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             if (botId == null)
             {
@@ -160,9 +166,10 @@ namespace Decisions.TruBot.Steps
 
             try
             {
-                string result = TruBotRest.TruBotGet(
-                    $"{baseUrl}/BotId/{botId}",
-                    authentication);
+                StringContent? content = new StringContent(
+                    "{\"BotId\": " + botId + "}", null, "application/json");
+                
+                string result = TruBotRest.TruBotGet($"{baseUrl}", authentication, content);
                 
                 return ProcessInformationResponse.JsonDeserialize(result);
             }

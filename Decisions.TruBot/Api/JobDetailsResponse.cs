@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.Serialization;
 using DecisionsFramework.Design.ConfigurationStorage.Attributes;
 using Newtonsoft.Json;
