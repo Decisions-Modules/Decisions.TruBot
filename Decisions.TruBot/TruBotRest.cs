@@ -1,15 +1,16 @@
+using System.Net.Http.Json;
 using Decisions.TruBot.Data;
 
 namespace Decisions.TruBot;
 
 public class TruBotRest
 {
-    public static string TruBotGet(string url, TruBotAuthentication authentication, StringContent? content)
+    public static string TruBotPost(string url, TruBotAuthentication authentication, JsonContent content)
     {
         HttpClient client = new HttpClient();
         
-        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.Add("sid", authentication.sid);
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+        request.Headers.Add("UD-MS", authentication.sid);
         request.Headers.Add("Authorization", $"Bearer {authentication.token}");
         
         request.Content = content;
@@ -28,7 +29,7 @@ public class TruBotRest
         HttpClient client = new HttpClient();
 
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, url);
-        request.Headers.Add("sid", authentication.sid);
+        request.Headers.Add("UD-MS", authentication.sid);
         request.Headers.Add("Authorization", $"Bearer {authentication.token}");
         
         HttpResponseMessage response = client.Send(request);

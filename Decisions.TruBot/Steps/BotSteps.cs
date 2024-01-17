@@ -1,3 +1,4 @@
+using System.Net.Http.Json;
 using Decisions.TruBot.Api;
 using Decisions.TruBot.Data;
 using DecisionsFramework;
@@ -24,11 +25,13 @@ namespace Decisions.TruBot.Steps
 
             try
             {
-                StringContent? content = new StringContent(
-                    "{\"BotId\":" + botId + "}", null, "application/json");
+                BotIdRequest inputs = new BotIdRequest();
+                inputs.BotId = botId;
                 
-                string result = TruBotRest.TruBotGet($"{baseUrl}/RunBot/{botId}", authentication, content);
+                JsonContent content = JsonContent.Create(inputs);
                 
+                string result = TruBotRest.TruBotPost($"{baseUrl}/RunBot", authentication, content);
+
                 return TruBotResponse.JsonDeserialize(result);
             }
             catch (Exception ex)
@@ -37,14 +40,9 @@ namespace Decisions.TruBot.Steps
             }
         }
         
-        public JobStatusResponse GetJobStatus(TruBotAuthentication authentication, string jobExecutionId, int jobId,
+        public JobStatusResponse GetJobStatusByJobId(TruBotAuthentication authentication, int jobId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
-            if (string.IsNullOrEmpty(jobExecutionId))
-            {
-                throw new BusinessRuleException("jobExecutionId cannot be null or empty.");
-            }
-            
             if (jobId == null)
             {
                 throw new BusinessRuleException("jobId cannot be null.");
@@ -54,11 +52,12 @@ namespace Decisions.TruBot.Steps
 
             try
             {
-                StringContent? content = new StringContent(
-                    "{\"JobExecutionId\": \"" + jobExecutionId +
-                    ",\"JobId\":" + jobId + "}", null, "application/json");
+                JobIdRequest inputs = new JobIdRequest();
+                inputs.JobId = jobId;
                 
-                string result = TruBotRest.TruBotGet($"{baseUrl}/GetJobStatus", authentication, content);
+                JsonContent content = JsonContent.Create(inputs);
+                
+                string result = TruBotRest.TruBotPost($"{baseUrl}/GetJobStatus", authentication, content);
                 
                 return JobStatusResponse.JsonDeserialize(result);
             }
@@ -68,22 +67,58 @@ namespace Decisions.TruBot.Steps
             }
         }
         
-        public JobDetailsResponse GetJobDetails(TruBotAuthentication authentication, DateTime fromInitiationDateTime, DateTime toInitiationDateTime, int botId,
+        public JobStatusResponse GetJobStatusByJobExecutionId(TruBotAuthentication authentication, string jobExecutionId,
+            [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
+        {
+            if (string.IsNullOrEmpty(jobExecutionId))
+            {
+                throw new BusinessRuleException("jobExecutionId cannot be null or empty.");
+            }
+
+            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(overrideBaseUrl);
+
+            try
+            {
+                JobExecutionIdRequest inputs = new JobExecutionIdRequest();
+                inputs.JobExecutionId = jobExecutionId;
+
+                JsonContent content = JsonContent.Create(inputs);
+                
+                string result = TruBotRest.TruBotPost($"{baseUrl}/GetJobStatus", authentication, content);
+                
+                return JobStatusResponse.JsonDeserialize(result);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessRuleException("The request to TruBot was unsuccessful.", ex);
+            }
+        }
+        
+        public JobDetailsResponse GetJobDetails(TruBotAuthentication authentication, DateTime fromInitiationDateTime, DateTime toInitiationDateTime, int? botId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(overrideBaseUrl);
 
             try
             {
-                StringContent? content = (botId != null) ? new StringContent(
-                    "{\"FromInitiationDateTime\": \"" + fromInitiationDateTime +
-                    "\",\"ToInitiationDateTime\":" + toInitiationDateTime +
-                    ",\"BotId\":" + botId + "}", null, "application/json")
-                    
-                    : new StringContent("{\"FromInitiationDateTime\": \"" + fromInitiationDateTime + 
-                        "\",\"ToInitiationDateTime\":" + toInitiationDateTime + "}",null, "application/json");
+                DateRangeBotRequest inputs = new DateRangeBotRequest();
+                DateRangeRequest inputsNoId = new DateRangeRequest();
                 
-                string result = TruBotRest.TruBotGet($"{baseUrl}/GetJobDetails", authentication, content);
+                if (botId != null)
+                {
+                    inputs.FromInitiationDateTime = fromInitiationDateTime;
+                    inputs.ToInitiationDateTime = toInitiationDateTime;
+                    inputs.BotId = (int)botId;
+                }
+                else
+                {
+                    inputsNoId.FromInitiationDateTime = fromInitiationDateTime;
+                    inputsNoId.ToInitiationDateTime = toInitiationDateTime;
+                }
+
+                JsonContent content = (botId != null) ? JsonContent.Create(inputs) : JsonContent.Create(inputsNoId);
+                
+                string result = TruBotRest.TruBotPost($"{baseUrl}/GetJobDetails", authentication, content);
                 
                 return JobDetailsResponse.JsonDeserialize(result);
             }
@@ -115,11 +150,14 @@ namespace Decisions.TruBot.Steps
 
             try
             {
-                StringContent? content = new StringContent(
-                        "{\"JobExecutionId\": \"" + jobExecutionId + "\", \"BotId\": " + botId +
-                        ",\"JobId\": " + jobId + "}", null, "application/json");
+                BotVariableValuesRequest inputs = new BotVariableValuesRequest();
+                inputs.JobExecutionId = jobExecutionId;
+                inputs.BotId = botId;
+                inputs.JobId = jobId;
                 
-                string result = TruBotRest.TruBotGet($"{baseUrl}", authentication, content);
+                JsonContent content = JsonContent.Create(inputs);
+                
+                string result = TruBotRest.TruBotPost($"{baseUrl}", authentication, content);
                 
                 return BotVariablesValuesResponse.JsonDeserialize(result);
             }
@@ -141,10 +179,12 @@ namespace Decisions.TruBot.Steps
 
             try
             {
-                StringContent? content = new StringContent(
-                    "{\"ProcessName\": " + processName + "}", null, "application/json");
+                ProcessNameRequest inputs = new ProcessNameRequest();
+                inputs.ProcessName = processName;
                 
-                string result = TruBotRest.TruBotGet($"{baseUrl}", authentication, content);
+                JsonContent content = JsonContent.Create(inputs);
+                
+                string result = TruBotRest.TruBotPost($"{baseUrl}", authentication, content);
                 
                 return ProcessInformationResponse.JsonDeserialize(result);
             }
@@ -166,10 +206,12 @@ namespace Decisions.TruBot.Steps
 
             try
             {
-                StringContent? content = new StringContent(
-                    "{\"BotId\": " + botId + "}", null, "application/json");
+                BotIdRequest inputs = new BotIdRequest();
+                inputs.BotId = botId;
                 
-                string result = TruBotRest.TruBotGet($"{baseUrl}", authentication, content);
+                JsonContent content = JsonContent.Create(inputs);
+                
+                string result = TruBotRest.TruBotPost($"{baseUrl}", authentication, content);
                 
                 return ProcessInformationResponse.JsonDeserialize(result);
             }
