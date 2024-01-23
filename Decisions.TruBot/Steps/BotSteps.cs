@@ -40,6 +40,33 @@ namespace Decisions.TruBot.Steps
             }
         }
         
+        public TruBotResponse WaitRunBot(TruBotAuthentication authentication, int botId,
+            [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
+        {
+            if (botId == null)
+            {
+                throw new BusinessRuleException("botId cannot be null.");
+            }
+
+            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(overrideBaseUrl);
+
+            try
+            {
+                BotIdRequest inputs = new BotIdRequest();
+                inputs.BotId = botId;
+                
+                JsonContent content = JsonContent.Create(inputs);
+                
+                string result = TruBotRest.TruBotPost($"{baseUrl}/RunBot", authentication, content);
+
+                return TruBotResponse.JsonDeserialize(result);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessRuleException("The request to TruBot was unsuccessful.", ex);
+            }
+        }
+        
         public JobStatusResponse GetJobStatusByJobId(TruBotAuthentication authentication, int jobId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
