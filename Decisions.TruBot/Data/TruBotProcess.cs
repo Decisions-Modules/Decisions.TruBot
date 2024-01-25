@@ -1,5 +1,4 @@
 using System.Runtime.Serialization;
-using DecisionsFramework.Data.ORMapper;
 using DecisionsFramework.Design.ConfigurationStorage.Attributes;
 
 namespace Decisions.TruBot.Data

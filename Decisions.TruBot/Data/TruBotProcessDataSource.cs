@@ -54,7 +54,7 @@ namespace Decisions.TruBot.Data
             statement.PrimaryTable.Fields.Add(new CompositeSelectStatement.FieldDefinition("Start_Time"));
             statement.PrimaryTable.Fields.Add(new CompositeSelectStatement.FieldDefinition("Step_Duration"));
 
-            foreach (var sortInfo in sortingInfo)
+            foreach (DataPair sortInfo in sortingInfo)
             {
                 if (Enum.TryParse(sortInfo.OutputValue?.ToString(), out ORMResultOrder direction))
                 {
@@ -73,8 +73,7 @@ namespace Decisions.TruBot.Data
             {
                 statement.Top = (pageIndex + 1) * limitCount;
             }
-
-
+            
             IDbConnection? conn = null;
             if (DynamicORM.DatabaseDriver.DatabaseType == DataBaseTypeEnum.POSTGRES)
             {

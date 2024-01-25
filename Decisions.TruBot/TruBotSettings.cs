@@ -29,6 +29,12 @@ public class TruBotSettings : AbstractModuleSettings, IInitializable, INotifyPro
     
     [ORMField]
      private string baseUrl = "http://localhost:56498/CockpitPublicWebApi/api";
+     
+     [ORMField]
+     private string username = "";
+     
+     [ORMField]
+     private string password = "";
 
      [PropertyClassification(0, "Base URL", "TruBot Settings")]
      [DataMember]
@@ -40,6 +46,33 @@ public class TruBotSettings : AbstractModuleSettings, IInitializable, INotifyPro
          {
              baseUrl = value;
              OnPropertyChanged(nameof(BaseUrl));
+         }
+     }
+     
+     [PropertyClassification(1, "Username", "TruBot Settings")]
+     [DataMember]
+     [WritableValue]
+     public string Username
+     {
+         get => username;
+         set
+         {
+             username = value;
+             OnPropertyChanged(nameof(Username));
+         }
+     }
+     
+     [PasswordText]
+     [PropertyClassification(3, "Password", "TruBot Settings")]
+     [DataMember]
+     [WritableValue]
+     public string Password
+     {
+         get => password;
+         set
+         {
+             password = value;
+             OnPropertyChanged(nameof(Password));
          }
      }
      

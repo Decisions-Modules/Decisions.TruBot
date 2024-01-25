@@ -6,29 +6,23 @@ using DecisionsFramework.ServiceLayer.Utilities;
 namespace Decisions.TruBot.Data
 {
     [RegisterUser]
-    //[AutoRegisterService("TruBot Invocation Service", typeof(ITruBotInvocationService))]
-    public class TruBotInvocationService
+    [AutoRegisterService("TruBotInvocationService", typeof(ITruBotInvocationService))]
+    public class TruBotInvocationService : ITruBotInvocationService
     {
-        private static readonly Log Log = new Log("External Invocation");
+        private static readonly Log Log = new("TruBot Invocation");
         
         public void Complete(AbstractUserContext userContext, string truBotEntityInvocationId)
         {
             ORM<TruBotInvocationEntity> truBotInvocationEntityOrm = new ORM<TruBotInvocationEntity>();
             TruBotInvocationEntity truBotInvocationEntity = truBotInvocationEntityOrm.Fetch(truBotEntityInvocationId);
             
-            // Get the flow engine for the flow we'd like to complete
             FlowEngine engine = FlowEngine.GetEngine(truBotInvocationEntity.FlowTrackingId);
-
-            // Call Done to tell the Engine the Step is complete
             engine.Done(truBotInvocationEntity.FlowTrackingId, truBotInvocationEntity.StepTrackingId, new ResultData("Done"));
             
-            // Mark the Entity Invocation Completed
             truBotInvocationEntity.Status = "Completed";
-            
-            // Store the entity
             truBotInvocationEntityOrm.Store(truBotInvocationEntity);
 
-            Log.Warn("Complete Operation Successfully Invoked");
+            Log.Warn($"Complete Operation Successfully Invoked for {truBotEntityInvocationId}");
         }
 
         public string GetStatus(AbstractUserContext userContext, string truBotEntityInvocationId)
@@ -36,7 +30,7 @@ namespace Decisions.TruBot.Data
             ORM<TruBotInvocationEntity> truBotInvocationEntityOrm = new ORM<TruBotInvocationEntity>();
             TruBotInvocationEntity truBotInvocationEntity = truBotInvocationEntityOrm.Fetch(truBotEntityInvocationId);
             
-            Log.Warn("Get Status Operation Successfully Invoked");
+            Log.Warn($"Get Status Operation Successfully Invoked for {truBotEntityInvocationId}");
 
             return truBotInvocationEntity.Status;
         }

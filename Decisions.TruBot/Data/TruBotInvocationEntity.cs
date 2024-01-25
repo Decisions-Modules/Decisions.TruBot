@@ -7,16 +7,16 @@ namespace Decisions.TruBot.Data
     [DataContract]
     public class TruBotInvocationEntity : BaseORMEntity
     {
-        [ORMPrimaryKeyField] 
+        [ORMPrimaryKeyField]
         private string truBotInvocationEntityId;
 
-        [ORMField] 
+        [ORMField]
         private string status;
         
-        [ORMField] 
+        [ORMField]
         private string flowTrackingId;
 
-        [ORMField] 
+        [ORMField]
         private string stepTrackingId;
 
         [DataMember]
