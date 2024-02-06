@@ -1,22 +1,62 @@
-using System.Runtime.Serialization;
-using DecisionsFramework.Design.ConfigurationStorage.Attributes;
+using DecisionsFramework.Data.ORMapper;
+using DecisionsFramework.Utilities;
 
 namespace Decisions.TruBot.Data
 {
-    [DataContract]
-    [Writable]
-    public class TruBotProcess
+    [ORMEntity("trubot_process")]
+    public class TruBotProcess : BaseORMEntity
     {
-        [WritableValue]
-        private string workflowName;
+        [ORMPrimaryKeyField]
+        public string Id { get; set; }
         
-        [WritableValue]
-        private string botName;
+        [ORMField]
+        public string WorkflowName { get; set; }
         
-        [WritableValue]
-        private DateTime startTime;
+        [ORMField]
+        public int BotId { get; set; }
         
-        [WritableValue]
-        private TimeOnly stepDuration;
+        [ORMField]
+        public string BotName { get; set; }
+        
+        [ORMField]
+        public DateTime StartTime { get; set; }
+        
+        [ORMField]
+        public string StepDuration { get; set; }
+
+        public override void BeforeSave()
+        {
+            if (string.IsNullOrEmpty(Id))
+            {
+                Id = IDUtility.GetNewIdString();
+            }
+            base.BeforeSave();
+        }
+
+        static ORM<TruBotProcess> orm = new();
+
+        internal static TruBotProcess GetTruBotProcess(string truBotProcessId)
+        {
+            return orm.Fetch(new WhereCondition[]
+            {
+                new FieldWhereCondition("id", QueryMatchType.Equals, truBotProcessId)
+            }).FirstOrDefault();
+        }
+        
+        internal static TruBotProcess GetTruBotProcessByBotId(string truBotId)
+        {
+            return orm.Fetch(new WhereCondition[]
+            {
+                new FieldWhereCondition("bot_id", QueryMatchType.Equals, truBotId)
+            }).FirstOrDefault();
+        }
+
+        internal static TruBotProcess[] GetRunningTruBotProcesses()
+        {
+            return orm.Fetch(new WhereCondition[]
+            {
+                new FieldWhereCondition("Status", QueryMatchType.Equals, "Started")
+            });
+        }
     }
 }

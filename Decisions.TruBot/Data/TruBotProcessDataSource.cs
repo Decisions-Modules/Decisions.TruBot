@@ -1,26 +1,28 @@
 using System.Data;
 using DecisionsFramework.Data.ORMapper;
-using DecisionsFramework.Design.ConfigurationStorage.Attributes;
 using DecisionsFramework.Design.Report;
-using DecisionsFramework.ServiceLayer;
 using DecisionsFramework.ServiceLayer.Services.ContextData;
 
 namespace Decisions.TruBot.Data
 {
     [AutoRegisterReportElement("TruBot Process Data", "TruBot")]
-    [Writable]
-    public class TruBotProcessDataSource : AbstractCustomDataSource
+    public class TruBotProcessDataSource : AbstractCustomDataSource, IFolderAwareFilter
     {
+        public string FolderId { get; set; }
+
         public string TableName { get; }
 
         public TruBotProcessDataSource()
         {
             TableName = "trubot_process_data";
         }
+        
+        private readonly string ProcedureName = "GetTruBotInvocationEntity";
+        private readonly string InterfaceParameterName = "truBotEntityInvocationId";
 
         public override bool Applies(ReportDefinition definition)
         {
-            return definition.HasDataSourcesOrFilters() == false;
+            return true;
         }
 
         public override ReportFieldData[] ReportFields
@@ -29,97 +31,23 @@ namespace Decisions.TruBot.Data
             {
                 return new[]
                 {
-                    new ReportFieldData(TableName, "Workflow_Name", typeof(string)),
-                    new ReportFieldData(TableName, "Bot_Name", typeof(string)),
-                    new ReportFieldData(TableName, "Start_Time", typeof(DateTime)),
-                    new ReportFieldData(TableName, "Step_Duration", typeof(TimeOnly))
+                    new ReportFieldData(TableName, "trubot_id", "Id", typeof(string)),
+                    new ReportFieldData(TableName, "trubot_workflow_name", "WorkflowName", typeof(string)),
+                    new ReportFieldData(TableName, "trubot_bot_id", "BotId", typeof(string)),
+                    new ReportFieldData(TableName, "trubot_bot_name", "BotName", typeof(string)),
+                    new ReportFieldData(TableName, "trubot_start_time", "StartTime", typeof(DateTime)),
+                    new ReportFieldData(TableName, "trubot_step_duration", "StepDuration", typeof(TimeSpan))
                 };
             }
         }
 
-        public DataTable GetData(DataTable table, IReportFilter[] filters, int? limitCount, int pageIndex, DataPair[] sortingInfo, Func<DataRow, bool> rowHandler)
+        public override DataTable GetDataForPage(DataTable currentTable, IReportFilter[] filters, int? limitCount, int pageIndex, DataPair[] sortingInfo, Func<DataRow, bool> rowHandler)
         {
-            if (table == null)
-            {
-                table = new DataTable();
-            }
-
-            table.Columns.AddRange(GetColumnsFromReportFields(ReportFields));
-
-            CompositeSelectStatement statement = new CompositeSelectStatement(
-                new CompositeSelectStatement.TableDefinition("trubot_process_data"));
+            ExecuteStoredProcedureWithReturn executeStatement = new ExecuteStoredProcedureWithReturn(ProcedureName, new[] { new ProcedureParam(InterfaceParameterName, FolderId)});
             
-            statement.PrimaryTable.Fields.Add(new CompositeSelectStatement.FieldDefinition("Workflow_Name"));
-            statement.PrimaryTable.Fields.Add(new CompositeSelectStatement.FieldDefinition("Bot_Name"));
-            statement.PrimaryTable.Fields.Add(new CompositeSelectStatement.FieldDefinition("Start_Time"));
-            statement.PrimaryTable.Fields.Add(new CompositeSelectStatement.FieldDefinition("Step_Duration"));
-
-            foreach (DataPair sortInfo in sortingInfo)
-            {
-                if (Enum.TryParse(sortInfo.OutputValue?.ToString(), out ORMResultOrder direction))
-                {
-                    statement.OrderBy.Add(sortInfo.Name, direction);
-                }
-            }
-
-            int? startIndex = null;
-
-            if (limitCount.HasValue)
-            {
-                startIndex = pageIndex * limitCount;
-            }
-
-            if (rowHandler == null && limitCount != null)
-            {
-                statement.Top = (pageIndex + 1) * limitCount;
-            }
-            
-            IDbConnection? conn = null;
-            if (DynamicORM.DatabaseDriver.DatabaseType == DataBaseTypeEnum.POSTGRES)
-            {
-                //conn = new NpgsqlConnection(DynamicORM.ConnectionString);
-            }
-            else
-            {
-                //conn = ConnectionUtilities.GetSQLConnection(DynamicORM.ConnectionString);
-            }
-            
-            using (conn)
-            {
-                conn.Open();
-                IDataReader reader = statement.GetQueryResult(conn);
-                int index = 0;
-
-                while (reader.Read())
-                {
-                    if (table.Rows.Count >= limitCount) break;
-
-                    DataRow dr = table.NewRow();
-                    for (int i = 0; i < ReportFields.Length; i++)
-                    {
-                        dr[ReportFields[i].FieldName] = reader[i];
-                    }
-
-                    if (rowHandler == null || rowHandler(dr))
-                    {
-                        bool shouldAdd = true;
-
-                        if (startIndex.HasValue)
-                        {
-                            shouldAdd = index >= startIndex;
-                        }
-
-                        if (shouldAdd)
-                        {
-                            table.Rows.Add(dr);
-                        }
-
-                        index++;
-                    }
-                }
-            }
-
-            return table;
+            DynamicORM orm = new DynamicORM();
+            DataSet ds = orm.RunQuery(executeStatement);
+            return ds.Tables[0];
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Decisions.TruBot.Data
             Log.Warn($"Complete Operation Successfully Invoked for {truBotEntityInvocationId}");
         }
 
-        public string GetStatus(AbstractUserContext userContext, string truBotEntityInvocationId)
+        public string? GetStatus(AbstractUserContext userContext, string truBotEntityInvocationId)
         {
             ORM<TruBotInvocationEntity> truBotInvocationEntityOrm = new ORM<TruBotInvocationEntity>();
             TruBotInvocationEntity truBotInvocationEntity = truBotInvocationEntityOrm.Fetch(truBotEntityInvocationId);

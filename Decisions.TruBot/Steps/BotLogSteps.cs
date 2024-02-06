@@ -40,7 +40,8 @@ namespace Decisions.TruBot.Steps
             }
         }
         
-        public BotTransactionLogResponse DownloadBotTransactionLog(TruBotAuthentication authentication, string jobExecutionId,
+        public void DownloadBotTransactionLog(
+            TruBotAuthentication authentication, string jobExecutionId, string destinationDirectory,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             if (string.IsNullOrEmpty(jobExecutionId))
@@ -56,10 +57,8 @@ namespace Decisions.TruBot.Steps
                 inputs.JobExecutionId = jobExecutionId;
 
                 JsonContent content = JsonContent.Create(inputs);
-                
-                string result = TruBotRest.TruBotPost($"{baseUrl}/DownloadBotTransactionLog", authentication, content);
-                
-                return BotTransactionLogResponse.JsonDeserialize(result);
+
+                TruBotRest.TruBotDownload($"{baseUrl}/DownloadBotTransactionLog", destinationDirectory, jobExecutionId, authentication, content);
             }
             catch (Exception ex)
             {

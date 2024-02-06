@@ -1,43 +1,40 @@
-using System.Runtime.Serialization;
 using DecisionsFramework.Data.ORMapper;
+using DecisionsFramework.Utilities;
 
 namespace Decisions.TruBot.Data
 {
-    [ORMEntity]
-    [DataContract]
+    [ORMEntity("trubot_invocation_entity")]
     public class TruBotInvocationEntity : BaseORMEntity
     {
         [ORMPrimaryKeyField]
-        private string truBotInvocationEntityId;
+        public string Id { get; set; }
 
         [ORMField]
-        private string status;
+        public string? Status { get; set; }
         
         [ORMField]
-        private string flowTrackingId;
+        public string FlowTrackingId { get; set; }
 
         [ORMField]
-        private string stepTrackingId;
+        public string StepTrackingId { get; set; }
 
-        [DataMember]
-        public string Status
+        public override void BeforeSave()
         {
-            get => status;
-            set => status = value;
-        }
-        
-        [DataMember]
-        public string FlowTrackingId
-        {
-            get => flowTrackingId;
-            set => flowTrackingId = value;
+            if (string.IsNullOrEmpty(Id))
+            {
+                Id = IDUtility.GetNewIdString();
+            }
+            base.BeforeSave();
         }
 
-        [DataMember]
-        public string StepTrackingId
+        static ORM<TruBotInvocationEntity> orm = new();
+
+        private static TruBotInvocationEntity GetTruBotInvocation(string truBotInvocationId)
         {
-            get => stepTrackingId;
-            set => stepTrackingId = value;
+            return orm.Fetch(new WhereCondition[]
+            {
+                new FieldWhereCondition("Id", QueryMatchType.Equals, truBotInvocationId)
+            }).FirstOrDefault();
         }
     }
 }

@@ -9,6 +9,7 @@ using DecisionsFramework.Design.Flow.Mapping;
 using DecisionsFramework.Design.Flow.StepImplementations;
 using DecisionsFramework.Design.Properties;
 using DecisionsFramework.ServiceLayer;
+using DecisionsFramework.Utilities;
 
 namespace Decisions.TruBot.Steps
 {
@@ -44,13 +45,24 @@ namespace Decisions.TruBot.Steps
             }
 
             ORM<TruBotInvocationEntity> botEntityOrm = new ORM<TruBotInvocationEntity>();
-            TruBotInvocationEntity botEntity = new TruBotInvocationEntity
-            {
-                Status = "Running",
-                FlowTrackingId = data.FlowTrackingID,
-                StepTrackingId = data.StepTrackingID
-            };
+            
+            TruBotInvocationEntity botEntity = new TruBotInvocationEntity();
+            botEntity.Id = IDUtility.GetNewIdString();
+            botEntity.Status = "Started";
+            botEntity.FlowTrackingId = data.FlowTrackingID;
+            botEntity.StepTrackingId = data.StepTrackingID;
+            
             botEntityOrm.Store(botEntity);
+            
+            ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
+            
+            TruBotProcess botProcess = new TruBotProcess();
+            botProcess.Id = IDUtility.GetNewIdString();
+            botProcess.WorkflowName = FlowEngine.CurrentFlow.Name;
+            botProcess.BotId = botId;
+            botProcess.StartTime = DateTime.Now;
+            
+            botProcessOrm.Store(botProcess);
 
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(OverrideBaseUrl);
 
@@ -71,11 +83,17 @@ namespace Decisions.TruBot.Steps
                 throw new BusinessRuleException("The request to TruBot was unsuccessful.", ex);
             }
 
-            botEntity.Status = "Complete";
-            botEntityOrm.Store(botEntity);
-            
             Dictionary<string, object> resultData = new Dictionary<string, object>();
             resultData.Add(TRUBOT_RESPONSE, truBotResponse);
+            
+            botProcess.BotName = truBotResponse.BotName;
+            botProcess.StepDuration = $"{(DateTime.Now - botProcess.StartTime).Duration().Seconds}s";
+            
+            botProcessOrm.Store(botProcess);
+            
+            botEntity.Status = truBotResponse.JobStatus;
+            
+            botEntityOrm.Store(botEntity);
 
             return new ResultData(PATH_DONE, resultData);
         }

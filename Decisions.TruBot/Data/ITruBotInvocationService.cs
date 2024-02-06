@@ -10,6 +10,6 @@ namespace Decisions.TruBot.Data
         void Complete(AbstractUserContext userContext, string truBotEntityInvocationId);
 
         [OperationContract]
-        string GetStatus(AbstractUserContext userContext, string truBotEntityInvocationId);
+        string? GetStatus(AbstractUserContext userContext, string truBotEntityInvocationId);
     }
 }
