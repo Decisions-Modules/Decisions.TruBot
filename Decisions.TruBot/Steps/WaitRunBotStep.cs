@@ -66,7 +66,7 @@ namespace Decisions.TruBot.Steps
 
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(OverrideBaseUrl);
 
-            TruBotResponse truBotResponse;
+            TruBotResponse truBotResponse = new TruBotResponse();
             try
             {
                 BotIdRequest inputs = new BotIdRequest();
@@ -75,8 +75,25 @@ namespace Decisions.TruBot.Steps
                 JsonContent content = JsonContent.Create(inputs);
                 
                 string result = TruBotRest.TruBotPost($"{baseUrl}/RunBot", authentication, content);
+                
+                TruBotResponse response = TruBotResponse.JsonDeserialize(result);
 
-                truBotResponse = TruBotResponse.JsonDeserialize(result);
+                JobStatusResponse statusResponse = new JobStatusResponse();
+                JobIdRequest statusRequestInput = new JobIdRequest();
+                statusRequestInput.JobId = response.JobId;
+                
+                JsonContent statusContent = JsonContent.Create(statusRequestInput);
+                
+                while (statusResponse.Data.Status != "Completed" &&
+                       statusResponse.Data.Status != "Failed")
+                {
+                    statusResponse = JobStatusResponse.JsonDeserialize(
+                        TruBotRest.TruBotPost($"{baseUrl}/GetJobStatus", authentication, statusContent));
+                }
+
+                truBotResponse.JobStatus = statusResponse.Data.Status;
+
+                truBotResponse = response;
             }
             catch (Exception ex)
             {

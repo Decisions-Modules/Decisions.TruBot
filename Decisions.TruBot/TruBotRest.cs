@@ -40,12 +40,14 @@ public class TruBotRest
         
         HttpResponseMessage response = client.Send(request);
         response.EnsureSuccessStatusCode();
-
-        string fileName = $"BotTransactionLog-{jobExecutionId}.csv";
+        
+        string[] contentName = response.Content.Headers.ContentDisposition.FileName.Split(".");
+        string fileName = contentName.First() + $"-{jobExecutionId}";
+        string fileType = contentName.Last();
 
         byte[] result = response.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult();
 
-        using (FileStream stream = new FileStream($"{destinationDirectory}/{fileName}", FileMode.Create, FileAccess.Write))
+        using (FileStream stream = new FileStream($"{destinationDirectory}/{fileName}.{fileType}", FileMode.Create, FileAccess.Write))
         {
             stream.Write(result, 0, result.Length);
         }

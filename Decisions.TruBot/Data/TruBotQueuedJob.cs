@@ -1,10 +1,13 @@
 using DecisionsFramework;
+using DecisionsFramework.ServiceLayer;
 using DecisionsFramework.Utilities;
 
 namespace Decisions.TruBot.Data
 {
-    public class TruBotQueuedJob : IThreadJob
+    public class TruBotQueuedJob : IThreadJob, IInitializable
     {
+        private static Log log = new Log("TruBot Queued Job");
+        
         private string id;
         public string Id
         {
@@ -22,6 +25,14 @@ namespace Decisions.TruBot.Data
         
         private static readonly Log Log = new("TruBot Queued Job");
 
+        private TruBotProcess RunningProcess { get; set;  }
+
+        public TruBotQueuedJob(TruBotProcess runningProcess, string id)
+        {
+            RunningProcess = runningProcess;
+            Id = id;
+        }
+        
         private TruBotProcess[] RunningProcesses { get; set;  }
 
         public TruBotQueuedJob(TruBotProcess[] runningProcesses, string id)
@@ -41,6 +52,31 @@ namespace Decisions.TruBot.Data
             }
                 
             ThreadJobService.AddToQueue(DateTime.Now.AddSeconds(5), this, $"TruBot-Queue-{Id}");
+        }
+        
+        public static void StartThreadJob(TruBotProcess process)
+        {
+            if (process == null)
+            {
+                log.Error("TruBot process was not found.");
+                return;
+            }
+            
+            string queueName = $"TruBot-QueuedJob-{process.BotName}";
+            if (!ThreadJobService.HasJobInQueue(queueName))
+            {
+                ThreadJobService.AddToQueue(DateTime.Now, 
+                    new TruBotQueuedJob(process, queueName),
+                    queueName);
+            }
+        }
+
+        public void Initialize()
+        {
+            //retrieve list of trubot process entitiies
+            
+            //for each entity, do below
+            //StartThreadJob();
         }
     }
 }
