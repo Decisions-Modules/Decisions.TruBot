@@ -1,12 +1,20 @@
+using DecisionsFramework.Data.DataTypes;
 using DecisionsFramework.Data.ORMapper;
+using DecisionsFramework.Design.Properties;
+using DecisionsFramework.ServiceLayer;
 using DecisionsFramework.Utilities;
 
 namespace Decisions.TruBot.Data
 {
     [ORMEntity("trubot_process")]
-    public class TruBotProcess : BaseORMEntity
+    public class TruBotProcess : AbstractFolderEntity
     {
+        public TruBotProcess()
+        {
+        }
+
         [ORMPrimaryKeyField]
+        [PropertyHidden]
         public string Id { get; set; }
         
         [ORMField]
@@ -34,6 +42,14 @@ namespace Decisions.TruBot.Data
         }
 
         static ORM<TruBotProcess> orm = new();
+
+        public TruBotProcess(string workflowName, int botId, DateTime startTime)
+        {
+            Id = IDUtility.GetNewIdString();
+            WorkflowName = workflowName;
+            BotId = botId;
+            StartTime = startTime;
+        }
 
         internal static TruBotProcess GetTruBotProcess(string truBotProcessId)
         {

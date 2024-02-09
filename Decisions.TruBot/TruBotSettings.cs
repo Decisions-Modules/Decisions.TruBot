@@ -35,8 +35,20 @@ public class TruBotSettings : AbstractModuleSettings, IInitializable, INotifyPro
      
      [ORMField]
      private string password = "";
+     
+     [PropertyClassification(0, " ", "TruBot Settings")]
+     [ReadonlyEditor]
+     [ExcludeInDescription]
+     public string ApiKeyMessage
+     {
+         get
+         {
+             return "A license for TruBot is needed. Learn more at:https://www.datamatics.com/lp/intelligent-automation/idp-trucap/partner/decisions?utm_source=decisions.com&utm_medium=module_link_click&utm_content=ad1";
+         }
+         set { }
+     }
 
-     [PropertyClassification(0, "Base URL", "TruBot Settings")]
+     [PropertyClassification(1, "Base URL", "TruBot Settings")]
      [DataMember]
      [WritableValue]
      public string BaseUrl
@@ -49,7 +61,7 @@ public class TruBotSettings : AbstractModuleSettings, IInitializable, INotifyPro
          }
      }
      
-     [PropertyClassification(1, "Username", "TruBot Settings")]
+     [PropertyClassification(2, "Username", "TruBot Settings")]
      [DataMember]
      [WritableValue]
      public string Username
@@ -74,18 +86,6 @@ public class TruBotSettings : AbstractModuleSettings, IInitializable, INotifyPro
              password = value;
              OnPropertyChanged(nameof(Password));
          }
-     }
-     
-     [PropertyClassification(1, " ", "TruBot Settings")]
-     [ReadonlyEditor]
-     [ExcludeInDescription]
-     public string ApiKeyMessage
-     {
-         get
-         {
-             return "";
-         }
-         set { }
      }
 
      public string GetBaseUrl(string? overrideBaseUrl) {

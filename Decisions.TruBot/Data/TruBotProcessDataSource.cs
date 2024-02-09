@@ -31,12 +31,12 @@ namespace Decisions.TruBot.Data
             {
                 return new[]
                 {
-                    new ReportFieldData(TableName, "trubot_id", "Id", typeof(string)),
-                    new ReportFieldData(TableName, "trubot_workflow_name", "WorkflowName", typeof(string)),
-                    new ReportFieldData(TableName, "trubot_bot_id", "BotId", typeof(string)),
-                    new ReportFieldData(TableName, "trubot_bot_name", "BotName", typeof(string)),
-                    new ReportFieldData(TableName, "trubot_start_time", "StartTime", typeof(DateTime)),
-                    new ReportFieldData(TableName, "trubot_step_duration", "StepDuration", typeof(TimeSpan))
+                    new ReportFieldData(TableName, "id", "Id", typeof(string)),
+                    new ReportFieldData(TableName, "workflow_name", "WorkflowName", typeof(string)),
+                    new ReportFieldData(TableName, "bot_id", "BotId", typeof(string)),
+                    new ReportFieldData(TableName, "bot_name", "BotName", typeof(string)),
+                    new ReportFieldData(TableName, "start_time", "StartTime", typeof(DateTime)),
+                    new ReportFieldData(TableName, "step_duration", "StepDuration", typeof(TimeSpan))
                 };
             }
         }

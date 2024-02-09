@@ -1,4 +1,6 @@
+using System.Data;
 using DecisionsFramework;
+using DecisionsFramework.Data.ORMapper;
 using DecisionsFramework.ServiceLayer;
 using DecisionsFramework.Utilities;
 
@@ -9,6 +11,7 @@ namespace Decisions.TruBot.Data
         private static Log log = new Log("TruBot Queued Job");
         
         private string id;
+        
         public string Id
         {
             get
@@ -25,9 +28,9 @@ namespace Decisions.TruBot.Data
         
         private static readonly Log Log = new("TruBot Queued Job");
 
-        private TruBotProcess RunningProcess { get; set;  }
+        private TruBotProcess? RunningProcess { get; set;  }
 
-        public TruBotQueuedJob(TruBotProcess runningProcess, string id)
+        public TruBotQueuedJob(TruBotProcess? runningProcess, string id)
         {
             RunningProcess = runningProcess;
             Id = id;
@@ -54,7 +57,7 @@ namespace Decisions.TruBot.Data
             ThreadJobService.AddToQueue(DateTime.Now.AddSeconds(5), this, $"TruBot-Queue-{Id}");
         }
         
-        public static void StartThreadJob(TruBotProcess process)
+        public static void StartThreadJob(TruBotProcess? process)
         {
             if (process == null)
             {
@@ -62,7 +65,7 @@ namespace Decisions.TruBot.Data
                 return;
             }
             
-            string queueName = $"TruBot-QueuedJob-{process.BotName}";
+            string queueName = $"TruBot-QueuedJob-Bot#{process.BotId}";
             if (!ThreadJobService.HasJobInQueue(queueName))
             {
                 ThreadJobService.AddToQueue(DateTime.Now, 
@@ -70,13 +73,47 @@ namespace Decisions.TruBot.Data
                     queueName);
             }
         }
+        
+        internal static TruBotProcess? GetProcessById(string processId)
+        {
+            if (String.IsNullOrEmpty(processId))
+                throw new ArgumentNullException("processId");
+
+            return AbstractEntity.GetEntityById(processId) as TruBotProcess;
+        }
 
         public void Initialize()
         {
-            //retrieve list of trubot process entitiies
-            
-            //for each entity, do below
-            //StartThreadJob();
+            try
+            {
+                // Get Message Ids to pull
+                var executeStatement = new ExecuteStoredProcedureWithReturn("GetTruBotProcessesToStart");
+                DynamicORM dorm = new DynamicORM();
+                DataSet ds = dorm.RunQuery(executeStatement);
+
+                // Pick which messages to pull
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    var ids = new List<string>();
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        var val = dr[0].ToString();
+                        if (!string.IsNullOrEmpty(val))
+                        {
+                            ids.Add(val);
+                        }
+                    }
+                    
+                    foreach (var id in ids)
+                    {
+                        StartThreadJob(GetProcessById(id));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Debug($"Error occured while retrieving queued TruBot processes. ({ex.Message})");
+            }
         }
     }
 }

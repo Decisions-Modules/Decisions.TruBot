@@ -14,7 +14,7 @@ using DecisionsFramework.Utilities;
 namespace Decisions.TruBot.Steps
 {
     [Writable]
-    [AutoRegisterStep("Run Bot and Wait", "Integration/TruBot")]
+    [AutoRegisterStep("Run Bot and Wait", "Integration/TruBot/Bot")]
     [ShapeImageAndColorProvider(null, TruBotSettings.TRUBOT_IMAGES_PATH)]
     public class WaitRunBotStep : ISyncStep, IDataConsumer
     {
@@ -55,18 +55,17 @@ namespace Decisions.TruBot.Steps
             botEntityOrm.Store(botEntity);
             
             ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
-            
-            TruBotProcess botProcess = new TruBotProcess();
-            botProcess.Id = IDUtility.GetNewIdString();
-            botProcess.WorkflowName = FlowEngine.CurrentFlow.Name;
-            botProcess.BotId = botId;
-            botProcess.StartTime = DateTime.Now;
-            
+
+            TruBotProcess botProcess = new TruBotProcess(FlowEngine.CurrentFlow.Name, botId, DateTime.Now);
+
             botProcessOrm.Store(botProcess);
 
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(OverrideBaseUrl);
 
-            TruBotResponse truBotResponse = new TruBotResponse();
+            Dictionary<string, object> resultData = new Dictionary<string, object>();
+            
+            JobStatusResponse statusResponse;
+            TruBotResponse response = new TruBotResponse();
             try
             {
                 BotIdRequest inputs = new BotIdRequest();
@@ -76,31 +75,38 @@ namespace Decisions.TruBot.Steps
                 
                 string result = TruBotRest.TruBotPost($"{baseUrl}/RunBot", authentication, content);
                 
-                TruBotResponse response = TruBotResponse.JsonDeserialize(result);
-
-                JobStatusResponse statusResponse = new JobStatusResponse();
+                response = TruBotResponse.JsonDeserialize(result);
+                
                 JobIdRequest statusRequestInput = new JobIdRequest();
                 statusRequestInput.JobId = response.JobId;
                 
                 JsonContent statusContent = JsonContent.Create(statusRequestInput);
                 
-                while (statusResponse.Data.Status != "Completed" &&
-                       statusResponse.Data.Status != "Failed")
-                {
+                /*while (response.JobStatus != string.Empty && response.JobStatus != "Failed" &&
+                       statusResponse != "Completed" && statusResponse != "Failed")
+                {*/
+                    // TODO: wait here for 15 seconds
                     statusResponse = JobStatusResponse.JsonDeserialize(
-                        TruBotRest.TruBotPost($"{baseUrl}/GetJobStatus", authentication, statusContent));
-                }
-
-                truBotResponse.JobStatus = statusResponse.Data.Status;
-
-                truBotResponse = response;
+                    TruBotRest.TruBotPost($"{baseUrl}/GetJobStatus", authentication, statusContent));//.Data.Status;
+                //}
             }
             catch (Exception ex)
             {
                 throw new BusinessRuleException("The request to TruBot was unsuccessful.", ex);
             }
-
-            Dictionary<string, object> resultData = new Dictionary<string, object>();
+            
+            TruBotResponse truBotResponse = new TruBotResponse
+            {
+                Status = response.Status,
+                Message = response.Message,
+                BotId = response.BotId,
+                BotName = response.BotName,
+                BotStationName = response.BotStationName,
+                JobId = response.JobId,
+                JobStatus = statusResponse.Data.Status ?? response.JobStatus,
+                JobExecutionId = response.JobExecutionId
+            };
+                
             resultData.Add(TRUBOT_RESPONSE, truBotResponse);
             
             botProcess.BotName = truBotResponse.BotName;
