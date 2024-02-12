@@ -26,15 +26,15 @@ namespace Decisions.TruBot.Api
     public class ProcessInformationResponse
     {
         [WritableValue]
-        [JsonProperty("Status")]
+        [JsonProperty("status")]
         public int Status { get; set; }
         
         [WritableValue]
-        [JsonProperty("Message")]
+        [JsonProperty("message")]
         public string? Message { get; set; }
         
         [WritableValue]
-        [JsonProperty("Data")]
+        [JsonProperty("data")]
         public ProcessInformationData[]? Data { get; set; }
         
         public static ProcessInformationResponse JsonDeserialize(string json)

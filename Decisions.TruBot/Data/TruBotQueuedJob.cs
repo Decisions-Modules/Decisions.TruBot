@@ -1,12 +1,9 @@
-using System.Data;
 using DecisionsFramework;
-using DecisionsFramework.Data.ORMapper;
-using DecisionsFramework.ServiceLayer;
 using DecisionsFramework.Utilities;
 
 namespace Decisions.TruBot.Data
 {
-    public class TruBotQueuedJob : IThreadJob, IInitializable
+    public class TruBotQueuedJob : IThreadJob
     {
         private static Log log = new Log("TruBot Queued Job");
         
@@ -38,11 +35,11 @@ namespace Decisions.TruBot.Data
         
         private TruBotProcess[] RunningProcesses { get; set;  }
 
-        public TruBotQueuedJob(TruBotProcess[] runningProcesses, string id)
+        /*public TruBotQueuedJob(TruBotProcess[] runningProcesses, string id)
         {
             RunningProcesses = runningProcesses;
             Id = id;
-        }
+        }*/
 
         public void Run()
         {
@@ -54,7 +51,7 @@ namespace Decisions.TruBot.Data
                 Log.Warn("No running TruBot processes available.");
             }
                 
-            ThreadJobService.AddToQueue(DateTime.Now.AddSeconds(5), this, $"TruBot-Queue-{Id}");
+            ThreadJobService.AddToQueue(DateTime.Now.AddSeconds(5), this, $"TruBot-Queued-Job-{Id}");
         }
         
         public static void StartThreadJob(TruBotProcess? process)
@@ -65,16 +62,37 @@ namespace Decisions.TruBot.Data
                 return;
             }
             
-            string queueName = $"TruBot-QueuedJob-Bot#{process.BotId}";
+            string queueName = $"TruBot-Queued-Job-{process.Id}";
             if (!ThreadJobService.HasJobInQueue(queueName))
             {
+                log.Info($"Starting queue: {queueName}.");
+                
                 ThreadJobService.AddToQueue(DateTime.Now, 
                     new TruBotQueuedJob(process, queueName),
                     queueName);
             }
+            else
+            {
+                log.Info($"{queueName} already running.");
+            }
         }
         
-        internal static TruBotProcess? GetProcessById(string processId)
+        public static void CompleteThreadJob(string? processId)
+        {
+            string queueName = $"TruBot-Queued-Job-{processId}";
+            if (processId == null || !ThreadJobService.HasJobInQueue(queueName))
+            {
+                log.Error("TruBot process was not found.");
+                return;
+            }
+            
+            // TODO: Set status to "Complete"
+            // TODO: Set StepDuration to (DateTime.Now - StartTime)
+            
+            ThreadJobService.RemoveFromQueue(processId);
+        }
+        
+        /*internal static TruBotProcess? GetProcessById(string processId)
         {
             if (String.IsNullOrEmpty(processId))
                 throw new ArgumentNullException("processId");
@@ -114,6 +132,6 @@ namespace Decisions.TruBot.Data
             {
                 log.Debug($"Error occured while retrieving queued TruBot processes. ({ex.Message})");
             }
-        }
+        }*/
     }
 }

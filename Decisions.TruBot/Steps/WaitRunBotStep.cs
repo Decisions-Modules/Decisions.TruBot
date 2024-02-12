@@ -43,8 +43,11 @@ namespace Decisions.TruBot.Steps
             {
                 throw new BusinessRuleException("Authentication cannot be null.");
             }
+            
+            DateTime startTime = DateTime.Now;
+            TruBotQueuedJob.StartThreadJob(new TruBotProcess(FlowEngine.CurrentFlow.Name, botId, startTime));
 
-            ORM<TruBotInvocationEntity> botEntityOrm = new ORM<TruBotInvocationEntity>();
+            /*ORM<TruBotInvocationEntity> botEntityOrm = new ORM<TruBotInvocationEntity>();
             
             TruBotInvocationEntity botEntity = new TruBotInvocationEntity();
             botEntity.Id = IDUtility.GetNewIdString();
@@ -52,11 +55,12 @@ namespace Decisions.TruBot.Steps
             botEntity.FlowTrackingId = data.FlowTrackingID;
             botEntity.StepTrackingId = data.StepTrackingID;
             
-            botEntityOrm.Store(botEntity);
+            botEntityOrm.Store(botEntity);*/
             
             ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
 
             TruBotProcess botProcess = new TruBotProcess(FlowEngine.CurrentFlow.Name, botId, DateTime.Now);
+            TruBotQueuedJob.StartThreadJob(botProcess);
 
             botProcessOrm.Store(botProcess);
 
@@ -64,7 +68,7 @@ namespace Decisions.TruBot.Steps
 
             Dictionary<string, object> resultData = new Dictionary<string, object>();
             
-            JobStatusResponse statusResponse;
+            string statusResponse = "Deploying";
             TruBotResponse response = new TruBotResponse();
             try
             {
@@ -77,18 +81,19 @@ namespace Decisions.TruBot.Steps
                 
                 response = TruBotResponse.JsonDeserialize(result);
                 
-                JobIdRequest statusRequestInput = new JobIdRequest();
-                statusRequestInput.JobId = response.JobId;
+                JobExecutionIdRequest statusRequestInput = new JobExecutionIdRequest();
+                statusRequestInput.JobExecutionId = response.JobExecutionId;
                 
                 JsonContent statusContent = JsonContent.Create(statusRequestInput);
-                
-                /*while (response.JobStatus != string.Empty && response.JobStatus != "Failed" &&
-                       statusResponse != "Completed" && statusResponse != "Failed")
-                {*/
+
+                statusResponse = response.JobStatus;
+                while ((statusResponse == "Deploying" || statusResponse == "In Progress"))
+                {
                     // TODO: wait here for 15 seconds
+                    
                     statusResponse = JobStatusResponse.JsonDeserialize(
-                    TruBotRest.TruBotPost($"{baseUrl}/GetJobStatus", authentication, statusContent));//.Data.Status;
-                //}
+                        TruBotRest.TruBotPost($"{baseUrl}/GetJobStatus", authentication, statusContent)).Status;
+                }
             }
             catch (Exception ex)
             {
@@ -103,7 +108,7 @@ namespace Decisions.TruBot.Steps
                 BotName = response.BotName,
                 BotStationName = response.BotStationName,
                 JobId = response.JobId,
-                JobStatus = statusResponse.Data.Status ?? response.JobStatus,
+                JobStatus = statusResponse ?? response.JobStatus,
                 JobExecutionId = response.JobExecutionId
             };
                 
@@ -114,9 +119,9 @@ namespace Decisions.TruBot.Steps
             
             botProcessOrm.Store(botProcess);
             
-            botEntity.Status = truBotResponse.JobStatus;
+            /*botEntity.Status = truBotResponse.JobStatus;
             
-            botEntityOrm.Store(botEntity);
+            botEntityOrm.Store(botEntity);*/
 
             return new ResultData(PATH_DONE, resultData);
         }

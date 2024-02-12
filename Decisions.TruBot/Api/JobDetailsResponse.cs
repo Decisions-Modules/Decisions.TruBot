@@ -45,11 +45,11 @@ namespace Decisions.TruBot.Api
         public double? PercentageComplete { get; set; }
         
         [WritableValue]
-        [JsonProperty("Initiated_On")]
+        [JsonProperty("initiatedOn")]
         public DateTime? InitiatedOn { get; set; }
         
         [WritableValue]
-        [JsonProperty("Completed_On")]
+        [JsonProperty("completedOn")]
         public DateTime? CompletedOn { get; set; }
     }
 
@@ -58,8 +58,8 @@ namespace Decisions.TruBot.Api
     public class JobDetailsResponse
     {
         [WritableValue]
-        [JsonProperty("Code")]
-        public int StatusCode { get; set; }
+        [JsonProperty("code")]
+        public int Code { get; set; }
         
         [WritableValue]
         [JsonProperty("data")]

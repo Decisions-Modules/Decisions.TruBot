@@ -127,7 +127,7 @@ namespace Decisions.TruBot.Api
         
         [WritableValue]
         [JsonProperty("data")]
-        public JobStatusData? Data { get; set; }
+        public JobStatusResponse? Data { get; set; }
         
         public static BotTransactionLogResponse JsonDeserialize(string json)
         {

@@ -212,7 +212,7 @@ namespace Decisions.TruBot.Steps
                 JsonContent content = JsonContent.Create(inputs);
                 
                 string result = TruBotRest.TruBotPost($"{baseUrl}", authentication, content);
-                
+
                 return ProcessInformationResponse.JsonDeserialize(result);
             }
             catch (Exception ex)
