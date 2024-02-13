@@ -45,7 +45,12 @@ namespace Decisions.TruBot.Steps
             }
             
             DateTime startTime = DateTime.Now;
-            TruBotQueuedJob.StartThreadJob(new TruBotProcess(FlowEngine.CurrentFlow.Name, botId, startTime));
+            
+            ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
+            TruBotProcess botProcess = new TruBotProcess(FlowEngine.CurrentFlow.Name, botId, startTime);
+            TruBotQueuedJob.StartThreadJob(botProcess);
+
+            botProcessOrm.Store(botProcess);
 
             /*ORM<TruBotInvocationEntity> botEntityOrm = new ORM<TruBotInvocationEntity>();
             
@@ -56,19 +61,12 @@ namespace Decisions.TruBot.Steps
             botEntity.StepTrackingId = data.StepTrackingID;
             
             botEntityOrm.Store(botEntity);*/
-            
-            ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
-
-            TruBotProcess botProcess = new TruBotProcess(FlowEngine.CurrentFlow.Name, botId, DateTime.Now);
-            TruBotQueuedJob.StartThreadJob(botProcess);
-
-            botProcessOrm.Store(botProcess);
 
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(OverrideBaseUrl);
 
             Dictionary<string, object> resultData = new Dictionary<string, object>();
             
-            string statusResponse = "Deploying";
+            string? statusResponse = "Deploying";
             TruBotResponse response = new TruBotResponse();
             try
             {
@@ -89,7 +87,7 @@ namespace Decisions.TruBot.Steps
                 statusResponse = response.JobStatus;
                 while ((statusResponse == "Deploying" || statusResponse == "In Progress"))
                 {
-                    // TODO: wait here for 15 seconds
+                    Thread.Sleep(15000);
                     
                     statusResponse = JobStatusResponse.JsonDeserialize(
                         TruBotRest.TruBotPost($"{baseUrl}/GetJobStatus", authentication, statusContent)).Status;
@@ -115,9 +113,11 @@ namespace Decisions.TruBot.Steps
             resultData.Add(TRUBOT_RESPONSE, truBotResponse);
             
             botProcess.BotName = truBotResponse.BotName;
+            botProcess.Status = "Completed";
             botProcess.StepDuration = $"{(DateTime.Now - botProcess.StartTime).Duration().Seconds}s";
             
             botProcessOrm.Store(botProcess);
+            TruBotQueuedJob.StopThreadJob(botProcess);
             
             /*botEntity.Status = truBotResponse.JobStatus;
             

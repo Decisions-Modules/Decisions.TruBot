@@ -5,20 +5,20 @@ using DecisionsFramework.ServiceLayer.Services.ContextData;
 
 namespace Decisions.TruBot.Data
 {
-    [AutoRegisterReportElement("TruBot Process Data", "TruBot")]
-    public class TruBotProcessDataSource : AbstractCustomDataSource, IFolderAwareFilter
+    [AutoRegisterReportElement("TruBot Recorded Bots", "TruBot")]
+    public class RecordedBotsDataSource : AbstractCustomDataSource, IFolderAwareFilter
     {
         public string FolderId { get; set; }
 
         public string TableName { get; }
 
-        public TruBotProcessDataSource()
+        public RecordedBotsDataSource()
         {
-            TableName = "trubot_process_data";
+            TableName = "trubot_recorded_bots";
         }
         
-        private readonly string ProcedureName = "GetTruBotInvocationEntity";
-        private readonly string InterfaceParameterName = "truBotEntityInvocationId";
+        private readonly string ProcedureName = "GetTruBotEntity";
+        private readonly string InterfaceParameterName = "truBotEntityId";
 
         public override bool Applies(ReportDefinition definition)
         {
@@ -32,12 +32,10 @@ namespace Decisions.TruBot.Data
                 return new[]
                 {
                     new ReportFieldData(TableName, "id", "Id", typeof(string)),
-                    new ReportFieldData(TableName, "workflow_name", "WorkflowName", typeof(string)),
                     new ReportFieldData(TableName, "bot_id", "BotId", typeof(string)),
                     new ReportFieldData(TableName, "bot_name", "BotName", typeof(string)),
-                    new ReportFieldData(TableName, "status", "Status", typeof(string)),
-                    new ReportFieldData(TableName, "start_time", "StartTime", typeof(DateTime)),
-                    new ReportFieldData(TableName, "step_duration", "StepDuration", typeof(TimeSpan))
+                    new ReportFieldData(TableName, "initialized_on", "InitializedOn", typeof(DateTime)),
+                    new ReportFieldData(TableName, "last_run_on", "LastRunOn", typeof(DateTime))
                 };
             }
         }

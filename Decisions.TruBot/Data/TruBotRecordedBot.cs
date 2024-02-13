@@ -5,10 +5,10 @@ using DecisionsFramework.Utilities;
 
 namespace Decisions.TruBot.Data
 {
-    [ORMEntity("trubot_process")]
-    public class TruBotProcess : AbstractFolderEntity
+    [ORMEntity("trubot_recorded_bots")]
+    public class TruBotRecordedBot : AbstractFolderEntity
     {
-        public TruBotProcess()
+        public TruBotRecordedBot()
         {
         }
 
@@ -17,22 +17,17 @@ namespace Decisions.TruBot.Data
         public string Id { get; set; }
         
         [ORMField]
-        public string WorkflowName { get; set; }
-        
-        [ORMField]
         public int BotId { get; set; }
         
         [ORMField]
         public string BotName { get; set; }
         
         [ORMField]
-        public string Status { get; set; }
+        public DateTime InitializedOn { get; set; }
         
         [ORMField]
-        public DateTime StartTime { get; set; }
+        public DateTime LastRunOn { get; set; }
         
-        [ORMField]
-        public string StepDuration { get; set; }
 
         public override void BeforeSave()
         {
@@ -43,18 +38,34 @@ namespace Decisions.TruBot.Data
             base.BeforeSave();
         }
 
-        static ORM<TruBotProcess> orm = new();
+        static ORM<TruBotRecordedBot> orm = new();
 
-        public TruBotProcess(string workflowName, int botId, DateTime startTime)
+        public TruBotRecordedBot(int botId)
         {
+            TruBotRecordedBot bot = GetTruBotRecordByBotId(botId);
+
+            if (bot != null)
+            {
+                orm.UpdateAndRefetch(typeof(TruBotRecordedBot), new SqlStatementCommand(
+                    $"INSERT INTO trubot_recorded_bots (last_run_on) VALUES ({DateTime.Now})"));
+
+                bot = GetTruBotRecordByBotId(botId);
+
+                Id = bot.Id;
+                BotId = botId;
+                BotName = bot.BotName;
+                InitializedOn = bot.InitializedOn;
+                LastRunOn = bot.LastRunOn;
+
+                return;
+            }
+            
             Id = IDUtility.GetNewIdString();
-            WorkflowName = workflowName;
             BotId = botId;
-            Status = "Started";
-            StartTime = startTime;
+            InitializedOn = DateTime.Now;
         }
 
-        internal static TruBotProcess GetTruBotProcess(string truBotProcessId)
+        internal static TruBotRecordedBot GetTruBotRecord(string truBotProcessId)
         {
             return orm.Fetch(new WhereCondition[]
             {
@@ -62,20 +73,12 @@ namespace Decisions.TruBot.Data
             }).FirstOrDefault();
         }
         
-        internal static TruBotProcess GetTruBotProcessByBotId(string truBotId)
+        internal static TruBotRecordedBot GetTruBotRecordByBotId(int truBotId)
         {
             return orm.Fetch(new WhereCondition[]
             {
                 new FieldWhereCondition("bot_id", QueryMatchType.Equals, truBotId)
             }).FirstOrDefault();
-        }
-
-        internal static TruBotProcess[] GetRunningTruBotProcesses()
-        {
-            return orm.Fetch(new WhereCondition[]
-            {
-                new FieldWhereCondition("status", QueryMatchType.Equals, "Started")
-            });
         }
     }
 }

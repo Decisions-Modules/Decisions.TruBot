@@ -1,4 +1,5 @@
 using DecisionsFramework;
+using DecisionsFramework.ServiceLayer;
 using DecisionsFramework.Utilities;
 
 namespace Decisions.TruBot.Data
@@ -35,11 +36,11 @@ namespace Decisions.TruBot.Data
         
         private TruBotProcess[] RunningProcesses { get; set;  }
 
-        /*public TruBotQueuedJob(TruBotProcess[] runningProcesses, string id)
+        public TruBotQueuedJob(TruBotProcess[] runningProcesses, string id)
         {
             RunningProcesses = runningProcesses;
             Id = id;
-        }*/
+        }
 
         public void Run()
         {
@@ -58,7 +59,7 @@ namespace Decisions.TruBot.Data
         {
             if (process == null)
             {
-                log.Error("TruBot process was not found.");
+                log.Error("TruBot process could not be started: not found.");
                 return;
             }
             
@@ -77,22 +78,19 @@ namespace Decisions.TruBot.Data
             }
         }
         
-        public static void CompleteThreadJob(string? processId)
+        public static void StopThreadJob(TruBotProcess process)
         {
-            string queueName = $"TruBot-Queued-Job-{processId}";
-            if (processId == null || !ThreadJobService.HasJobInQueue(queueName))
+            string queueName = $"TruBot-Queued-Job-{process.Id}";
+            if (process.Id == null || !ThreadJobService.HasJobInQueue(queueName))
             {
-                log.Error("TruBot process was not found.");
+                log.Error("TruBot process could not be stopped: not found).");
                 return;
             }
             
-            // TODO: Set status to "Complete"
-            // TODO: Set StepDuration to (DateTime.Now - StartTime)
-            
-            ThreadJobService.RemoveFromQueue(processId);
+            ThreadJobService.RemoveFromQueue(process.Id);
         }
         
-        /*internal static TruBotProcess? GetProcessById(string processId)
+        internal static TruBotProcess? GetProcessById(string processId)
         {
             if (String.IsNullOrEmpty(processId))
                 throw new ArgumentNullException("processId");
@@ -100,16 +98,14 @@ namespace Decisions.TruBot.Data
             return AbstractEntity.GetEntityById(processId) as TruBotProcess;
         }
 
-        public void Initialize()
+        /*public void Initialize()
         {
             try
             {
-                // Get Message Ids to pull
                 var executeStatement = new ExecuteStoredProcedureWithReturn("GetTruBotProcessesToStart");
                 DynamicORM dorm = new DynamicORM();
                 DataSet ds = dorm.RunQuery(executeStatement);
 
-                // Pick which messages to pull
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     var ids = new List<string>();
