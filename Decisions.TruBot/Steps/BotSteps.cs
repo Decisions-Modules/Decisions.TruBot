@@ -13,7 +13,7 @@ namespace Decisions.TruBot.Steps
     [ShapeImageAndColorProvider(null, TruBotSettings.TRUBOT_IMAGES_PATH)]
     public class BotSteps
     {
-        public TruBotResponse RunBot(TruBotAuthentication authentication, int botId,
+        public TruBotResponse RunBot(int botId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             if (botId == null)
@@ -22,17 +22,27 @@ namespace Decisions.TruBot.Steps
             }
 
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(overrideBaseUrl);
+            string url = $"{baseUrl}/RunBot";
 
             try
             {
+                TruBotAuthentication auth = TruBotAuthentication.GetTruBotAuthentication(overrideBaseUrl);
+                
                 BotIdRequest inputs = new BotIdRequest();
                 inputs.BotId = botId;
                 
                 JsonContent content = JsonContent.Create(inputs);
                 
-                string result = TruBotRest.TruBotPost($"{baseUrl}/RunBot", authentication, content);
+                string result = TruBotRest.TruBotPost(url, auth, content);
+                TruBotResponse response = TruBotResponse.JsonDeserialize(result);
+                
+                if (response.Status == 401)
+                {
+                    result = TruBotRest.TruBotPost(url, TruBotAuthentication.Login(overrideBaseUrl), content);
+                    response = TruBotResponse.JsonDeserialize(result);
+                }
 
-                return TruBotResponse.JsonDeserialize(result);
+                return response;
             }
             catch (Exception ex)
             {

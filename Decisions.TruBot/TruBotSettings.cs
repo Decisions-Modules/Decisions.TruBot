@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Decisions.TruBot.Data;
 using DecisionsFramework;
 using DecisionsFramework.Data.ORMapper;
 using DecisionsFramework.Design.ConfigurationStorage.Attributes;
@@ -28,67 +29,99 @@ public class TruBotSettings : AbstractModuleSettings, IInitializable, INotifyPro
     }
     
     [ORMField]
-     private string baseUrl = "http://localhost:56498/CockpitPublicWebApi/api";
+    private string baseUrl = "http://localhost:56498/CockpitPublicWebApi/api";
      
-     [ORMField]
-     private string username = "";
+    [ORMField]
+    private string username = "";
      
-     [ORMField]
-     private string password = "";
+    [ORMField]
+    private string password = "";
      
-     [PropertyClassification(0, " ", "TruBot Settings")]
-     [ReadonlyEditor]
-     [ExcludeInDescription]
-     public string ApiKeyMessage
-     {
-         get
-         {
-             return "A license for TruBot is needed. Learn more at:https://www.datamatics.com/lp/intelligent-automation/idp-trucap/partner/decisions?utm_source=decisions.com&utm_medium=module_link_click&utm_content=ad1";
-         }
-         set { }
-     }
+    [ORMField]
+    [PropertyHidden]
+    private string token;
+    
+    [ORMField]
+    [PropertyHidden]
+    private string sid;
 
-     [PropertyClassification(1, "Base URL", "TruBot Settings")]
-     [DataMember]
-     [WritableValue]
-     public string BaseUrl
-     {
-         get => baseUrl;
-         set
-         {
-             baseUrl = value;
-             OnPropertyChanged(nameof(BaseUrl));
-         }
-     }
-     
-     [PropertyClassification(2, "Username", "TruBot Settings")]
-     [DataMember]
-     [WritableValue]
-     public string Username
-     {
-         get => username;
-         set
-         {
-             username = value;
-             OnPropertyChanged(nameof(Username));
-         }
-     }
-     
-     [PasswordText]
-     [PropertyClassification(3, "Password", "TruBot Settings")]
-     [DataMember]
-     [WritableValue]
-     public string Password
-     {
-         get => password;
-         set
-         {
-             password = value;
-             OnPropertyChanged(nameof(Password));
-         }
-     }
+    [PropertyClassification(0, " ", "TruBot Settings")]
+    [ReadonlyEditor]
+    [ExcludeInDescription]
+    public string ApiKeyMessage
+    {
+        get
+        {
+            return "A license for TruBot is needed. Learn more at:https://www.datamatics.com/lp/intelligent-automation/idp-trucap/partner/decisions?utm_source=decisions.com&utm_medium=module_link_click&utm_content=ad1";
+        }
+        set { }
+    }
 
-     public string GetBaseUrl(string? overrideBaseUrl) {
+    [PropertyClassification(1, "Base URL", "TruBot Settings")]
+    [DataMember]
+    [WritableValue]
+    public string BaseUrl
+    {
+        get => baseUrl;
+        set
+        {
+            baseUrl = value;
+            OnPropertyChanged(nameof(BaseUrl));
+        }
+    }
+     
+    [PropertyClassification(2, "Username", "TruBot Settings")]
+    [DataMember]
+    [WritableValue]
+    public string Username
+    {
+        get => username;
+        set
+        {
+            username = value;
+            OnPropertyChanged(nameof(Username));
+        }
+    }
+     
+    [PasswordText]
+    [PropertyClassification(3, "Password", "TruBot Settings")]
+    [DataMember]
+    [WritableValue]
+    public string Password
+    {
+        get => password;
+        set
+        {
+            password = value;
+            OnPropertyChanged(nameof(Password));
+        }
+    }
+     
+    [PropertyHidden]
+    [DataMember]
+    [WritableValue]
+    public string Token
+    {
+        get => token;
+        set
+        {
+            token = value;
+        }
+    }
+    
+    [PropertyHidden]
+    [DataMember]
+    [WritableValue]
+    public string Sid
+    {
+        get => sid;
+        set
+        {
+            sid = value;
+        }
+    }
+
+    public string GetBaseUrl(string? overrideBaseUrl) {
         string url = baseUrl;
         if (!string.IsNullOrEmpty(overrideBaseUrl)) 
             url = overrideBaseUrl;

@@ -17,8 +17,8 @@ namespace Decisions.TruBot.Data
             TableName = "trubot_process_data";
         }
         
-        private readonly string ProcedureName = "GetTruBotInvocationEntity";
-        private readonly string InterfaceParameterName = "truBotEntityInvocationId";
+        private readonly string ProcedureName = "GetTruBotProcess";
+        private readonly string InterfaceParameterName = "id";
 
         public override bool Applies(ReportDefinition definition)
         {

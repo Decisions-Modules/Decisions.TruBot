@@ -1,5 +1,10 @@
 using System.Runtime.Serialization;
+using System.Text;
+using Decisions.TruBot.Api;
+using DecisionsFramework;
 using DecisionsFramework.Design.ConfigurationStorage.Attributes;
+using DecisionsFramework.ServiceLayer;
+using DecisionsFramework.Utilities.Data;
 
 namespace Decisions.TruBot.Data
 {
@@ -19,6 +24,77 @@ namespace Decisions.TruBot.Data
         {
             request.Headers.Add("sid", sid);
             request.Headers.Add("token", token);
+        }
+        
+        public static TruBotAuthentication Login(string overrideBaseUrl)
+        {
+            string username = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Username;
+            string password = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Password;
+            
+            HttpClient client = HttpClients.GetHttpClient(HttpClientAuthType.Normal);
+            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseAccountUrl(overrideBaseUrl);
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/Login");
+            
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            {
+                throw new BusinessRuleException("Credentials must be configured in TruBot settings.");
+            }
+            
+            string credentials = $"{username}:{password}";
+
+            byte[] credentialsBytes = Encoding.UTF8.GetBytes(credentials);
+            string base64Credentials = Convert.ToBase64String(credentialsBytes);
+
+            // Set the Authorization header
+            request.Headers.Add("Authorization", $"Basic {base64Credentials}");
+
+            AuthenticationResponse authenticationResponse;
+            TruBotAuthentication truBotCredentials;
+            try
+            {
+                HttpResponseMessage response = client.Send(request);
+                response.EnsureSuccessStatusCode();
+
+                Task<string> resultTask = response.Content.ReadAsStringAsync();
+                resultTask.Wait();
+                
+                authenticationResponse = AuthenticationResponse.JsonDeserialize(resultTask.Result);
+
+                truBotCredentials = new TruBotAuthentication()
+                {
+                    sid = authenticationResponse.Sid,
+                    token = authenticationResponse.Token
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessRuleException("The login request to TruBot was unsuccessful.", ex);
+            }
+            
+            TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+            settings.Token = truBotCredentials.token;
+            settings.Sid = truBotCredentials.sid;
+            
+            ModuleSettingsAccessor<TruBotSettings>.SaveSettings(settings);
+
+            return truBotCredentials;
+        }
+
+        public static TruBotAuthentication GetTruBotAuthentication(string overrideBaseUrl)
+        {
+            TruBotAuthentication auth = new TruBotAuthentication
+            {
+                token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
+                sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
+            };
+                
+            if (string.IsNullOrEmpty(auth.token) || string.IsNullOrEmpty(auth.sid))
+            {
+                auth = Login(overrideBaseUrl);
+            }
+
+            return auth;
         }
     }
 }

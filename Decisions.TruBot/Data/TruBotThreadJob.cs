@@ -1,10 +1,12 @@
+using System.Data;
 using DecisionsFramework;
+using DecisionsFramework.Data.ORMapper;
 using DecisionsFramework.ServiceLayer;
 using DecisionsFramework.Utilities;
 
 namespace Decisions.TruBot.Data
 {
-    public class TruBotQueuedJob : IThreadJob
+    public class TruBotThreadJob : IThreadJob, IInitializable
     {
         private static Log log = new Log("TruBot Queued Job");
         
@@ -28,7 +30,7 @@ namespace Decisions.TruBot.Data
 
         private TruBotProcess? RunningProcess { get; set;  }
 
-        public TruBotQueuedJob(TruBotProcess? runningProcess, string id)
+        public TruBotThreadJob(TruBotProcess? runningProcess, string id)
         {
             RunningProcess = runningProcess;
             Id = id;
@@ -36,7 +38,7 @@ namespace Decisions.TruBot.Data
         
         private TruBotProcess[] RunningProcesses { get; set;  }
 
-        public TruBotQueuedJob(TruBotProcess[] runningProcesses, string id)
+        public TruBotThreadJob(TruBotProcess[] runningProcesses, string id)
         {
             RunningProcesses = runningProcesses;
             Id = id;
@@ -44,15 +46,15 @@ namespace Decisions.TruBot.Data
 
         public void Run()
         {
-            Log.Info("TruBot Queued Job running.");
+            string queueName = $"TruBot-Queued-Job-{Id}";
             RunningProcesses = TruBotProcess.GetRunningTruBotProcesses();
 
-            if (RunningProcesses.Length == 0)
+            if (!ThreadJobService.HasJobInQueue(queueName))
             {
-                Log.Warn("No running TruBot processes available.");
+                ThreadJobService.AddToQueue(DateTime.Now.AddSeconds(5), this, queueName);
             }
-                
-            ThreadJobService.AddToQueue(DateTime.Now.AddSeconds(5), this, $"TruBot-Queued-Job-{Id}");
+
+            TruBotAuthentication auth = TruBotAuthentication.GetTruBotAuthentication(null);
         }
         
         public static void StartThreadJob(TruBotProcess? process)
@@ -69,24 +71,25 @@ namespace Decisions.TruBot.Data
                 log.Info($"Starting queue: {queueName}.");
                 
                 ThreadJobService.AddToQueue(DateTime.Now, 
-                    new TruBotQueuedJob(process, queueName),
+                    new TruBotThreadJob(process, queueName),
                     queueName);
             }
             else
             {
-                log.Info($"{queueName} already running.");
+                log.Error($"{queueName} already running.");
             }
         }
         
-        public static void StopThreadJob(TruBotProcess process)
+        public static void CompleteThreadJob(TruBotProcess process)
         {
             string queueName = $"TruBot-Queued-Job-{process.Id}";
             if (process.Id == null || !ThreadJobService.HasJobInQueue(queueName))
             {
-                log.Error("TruBot process could not be stopped: not found).");
+                log.Error($"TruBot process could not be stopped: {queueName} not found).");
                 return;
             }
-            
+
+            ThreadJobService.CurrentJob.State = JobState.Completed;
             ThreadJobService.RemoveFromQueue(process.Id);
         }
         
@@ -98,7 +101,7 @@ namespace Decisions.TruBot.Data
             return AbstractEntity.GetEntityById(processId) as TruBotProcess;
         }
 
-        /*public void Initialize()
+        public void Initialize()
         {
             try
             {
@@ -108,7 +111,7 @@ namespace Decisions.TruBot.Data
 
                 if (ds.Tables[0].Rows.Count > 0)
                 {
-                    var ids = new List<string>();
+                    List<string> ids = new List<string>();
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         var val = dr[0].ToString();
@@ -118,7 +121,7 @@ namespace Decisions.TruBot.Data
                         }
                     }
                     
-                    foreach (var id in ids)
+                    foreach (string id in ids)
                     {
                         StartThreadJob(GetProcessById(id));
                     }
@@ -128,6 +131,6 @@ namespace Decisions.TruBot.Data
             {
                 log.Debug($"Error occured while retrieving queued TruBot processes. ({ex.Message})");
             }
-        }*/
+        }
     }
 }
