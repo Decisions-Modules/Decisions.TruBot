@@ -1,4 +1,6 @@
+using Decisions.TruBot.Api;
 using DecisionsFramework.Data.ORMapper;
+using DecisionsFramework.Design.Flow;
 using DecisionsFramework.Design.Properties;
 using DecisionsFramework.ServiceLayer;
 using DecisionsFramework.Utilities;
@@ -8,10 +10,6 @@ namespace Decisions.TruBot.Data
     [ORMEntity("trubot_process")]
     public class TruBotProcess : AbstractFolderEntity
     {
-        public TruBotProcess()
-        {
-        }
-
         [ORMPrimaryKeyField]
         [PropertyHidden]
         public string Id { get; set; }
@@ -35,9 +33,14 @@ namespace Decisions.TruBot.Data
         public string StepDuration { get; set; }
         
         [ORMField]
+        public string WorkflowId { get; set; }
+        
+        public string FlowTrackingId { get; set; }
+
+        public string StepTrackingId { get; set; }
+        
         public string UsedUrl { get; set; }
         
-        [ORMField]
         public string JobExecutionId { get; set; }
 
         public override void BeforeSave()
@@ -51,16 +54,10 @@ namespace Decisions.TruBot.Data
 
         static ORM<TruBotProcess> orm = new();
 
-        public TruBotProcess(string workflowName, int botId, string botName, DateTime startTime, string usedUrl, string jobExecutionId)
+        public TruBotProcess()
         {
             Id = IDUtility.GetNewIdString();
-            WorkflowName = workflowName;
-            BotId = botId;
-            BotName = botName;
             Status = "Started";
-            StartTime = startTime;
-            UsedUrl = usedUrl;
-            JobExecutionId = jobExecutionId;
         }
 
         internal static TruBotProcess GetTruBotProcess(string truBotProcessId)

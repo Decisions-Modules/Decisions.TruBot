@@ -18,7 +18,7 @@ namespace Decisions.TruBot.Steps
     public class WaitRunBotStep : IAsyncStep, IDataConsumer
     {
         private const string PATH_DONE = "Done";
-        private const string TRUBOT_RESPONSE = "TruBot Response";
+        private const string TRUBOT_RESPONSE = "TruBot Status Response";
         
         private const string BOT_ID = "BotId";
         
@@ -41,8 +41,6 @@ namespace Decisions.TruBot.Steps
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(OverrideBaseUrl);
             string runUrl = $"{baseUrl}/RunBot";
 
-            Dictionary<string, object> resultData = new Dictionary<string, object>();
-            
             TruBotAuthentication auth = new TruBotAuthentication
             {
                 Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
@@ -62,29 +60,25 @@ namespace Decisions.TruBot.Steps
                 response = TruBotResponse.JsonDeserialize(result);
                 
                 ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
-                botProcess = new TruBotProcess(FlowEngine.CurrentFlow.Name, botId, response.BotName, startTime, baseUrl, response.JobExecutionId);
-                TruBotThreadJob.StartThreadJob(botProcess);
-
+                botProcess = new TruBotProcess
+                {
+                    WorkflowName = FlowEngine.CurrentFlow.Name,
+                    BotId = botId,
+                    BotName = response.BotName,
+                    StartTime = startTime,
+                    FlowTrackingId = data.FlowTrackingID,
+                    StepTrackingId = data.StepTrackingID,
+                    UsedUrl = baseUrl,
+                    JobExecutionId = response.JobExecutionId
+                };
+                
                 botProcessOrm.Store(botProcess);
+                TruBotThreadJob.StartThreadJob(botProcess);
             }
             catch (Exception ex)
             {
                 throw new BusinessRuleException("The request to TruBot was unsuccessful.", ex);
             }
-
-            TruBotResponse truBotResponse = new TruBotResponse
-            {
-                Status = response.Status,
-                Message = response.Message,
-                BotId = response.BotId,
-                BotName = response.BotName,
-                BotStationName = response.BotStationName,
-                JobId = response.JobId,
-                JobStatus = response.JobStatus ?? botProcess.Status,
-                JobExecutionId = response.JobExecutionId
-            };
-            
-            resultData.Add(TRUBOT_RESPONSE, truBotResponse);
         }
         
         public OutcomeScenarioData[] OutcomeScenarios
@@ -93,7 +87,7 @@ namespace Decisions.TruBot.Steps
             {
                 return new[]
                 {
-                    new OutcomeScenarioData(PATH_DONE, new DataDescription(typeof(TruBotResponse), TRUBOT_RESPONSE)
+                    new OutcomeScenarioData(PATH_DONE, new DataDescription(typeof(JobStatusResponse), TRUBOT_RESPONSE)
                     {
                         DisplayName = TRUBOT_RESPONSE
                     })
