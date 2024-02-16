@@ -1,4 +1,6 @@
 using System.Data;
+using System.Net.Http.Json;
+using Decisions.TruBot.Api;
 using DecisionsFramework;
 using DecisionsFramework.Data.ORMapper;
 using DecisionsFramework.ServiceLayer;
@@ -25,8 +27,6 @@ namespace Decisions.TruBot.Data
             }
             set { id = value; }
         }
-        
-        private static readonly Log Log = new("TruBot Queued Job");
 
         private TruBotProcess? RunningProcess { get; set;  }
 
@@ -54,7 +54,26 @@ namespace Decisions.TruBot.Data
                 ThreadJobService.AddToQueue(DateTime.Now.AddSeconds(5), this, queueName);
             }
 
-            TruBotAuthentication auth = TruBotAuthentication.GetTruBotAuthentication(null);
+            TruBotAuthentication auth = new TruBotAuthentication
+            {
+                Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
+                Sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
+            };
+            
+            JobExecutionIdRequest statusRequest = new JobExecutionIdRequest
+            {
+                JobExecutionId = RunningProcess.JobExecutionId
+            };
+            
+            string? statusResponse = JobStatusResponse.JsonDeserialize(
+                TruBotRest.TruBotPost($"{RunningProcess.UsedUrl}/GetJobStatus", auth, JsonContent.Create(statusRequest))).Status;
+            
+            log.Warn($"{queueName} status: {statusResponse}");
+            
+            if ((statusResponse != "Deploying" && statusResponse != "In Progress"))
+            {
+                CompleteThreadJob(RunningProcess);
+            }
         }
         
         public static void StartThreadJob(TruBotProcess? process)
@@ -68,7 +87,7 @@ namespace Decisions.TruBot.Data
             string queueName = $"TruBot-Queued-Job-{process.Id}";
             if (!ThreadJobService.HasJobInQueue(queueName))
             {
-                log.Info($"Starting queue: {queueName}.");
+                log.Warn($"Starting queue: {queueName}.");
                 
                 ThreadJobService.AddToQueue(DateTime.Now, 
                     new TruBotThreadJob(process, queueName),
@@ -89,8 +108,18 @@ namespace Decisions.TruBot.Data
                 return;
             }
 
+            ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
+            
+            process.Status = "Completed";
+            
+            TimeSpan stepDuration = DateTime.Now - process.StartTime;
+            process.StepDuration = $"{stepDuration.Duration().Hours}:{stepDuration.Duration().Minutes}:{stepDuration.Duration().Seconds}";
+            
+            botProcessOrm.Store(process);
+            
             ThreadJobService.CurrentJob.State = JobState.Completed;
             ThreadJobService.RemoveFromQueue(process.Id);
+            log.Warn($"TruBot process {queueName} is complete.");
         }
         
         internal static TruBotProcess? GetProcessById(string processId)

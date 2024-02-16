@@ -14,23 +14,30 @@ namespace Decisions.TruBot.Data
     {
         [DataMember]
         [WritableValue]
-        public string token { get; set; }
+        public string Token { get; set; }
         
         [DataMember]
         [WritableValue]
-        public string sid { get; set; }
+        public string Sid { get; set; }
 
         public void SetHeaders(HttpRequestMessage request)
         {
-            request.Headers.Add("sid", sid);
-            request.Headers.Add("token", token);
+            request.Headers.Add("sid", Sid);
+            request.Headers.Add("token", Token);
         }
         
-        public static TruBotAuthentication Login(string overrideBaseUrl)
+        public static AuthenticationResponse Login(string overrideBaseUrl, string username, string password)
         {
-            string username = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Username;
-            string password = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Password;
-            
+            if (string.IsNullOrEmpty(username))
+            {
+                username = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Username;
+            }
+
+            if (string.IsNullOrEmpty(password))
+            {
+                password = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Password;
+            }
+
             HttpClient client = HttpClients.GetHttpClient(HttpClientAuthType.Normal);
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseAccountUrl(overrideBaseUrl);
 
@@ -50,7 +57,6 @@ namespace Decisions.TruBot.Data
             request.Headers.Add("Authorization", $"Basic {base64Credentials}");
 
             AuthenticationResponse authenticationResponse;
-            TruBotAuthentication truBotCredentials;
             try
             {
                 HttpResponseMessage response = client.Send(request);
@@ -60,12 +66,6 @@ namespace Decisions.TruBot.Data
                 resultTask.Wait();
                 
                 authenticationResponse = AuthenticationResponse.JsonDeserialize(resultTask.Result);
-
-                truBotCredentials = new TruBotAuthentication()
-                {
-                    sid = authenticationResponse.Sid,
-                    token = authenticationResponse.Token
-                };
             }
             catch (Exception ex)
             {
@@ -73,28 +73,12 @@ namespace Decisions.TruBot.Data
             }
             
             TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
-            settings.Token = truBotCredentials.token;
-            settings.Sid = truBotCredentials.sid;
+            settings.Token = authenticationResponse.Token;
+            settings.Sid = authenticationResponse.Sid;
             
             ModuleSettingsAccessor<TruBotSettings>.SaveSettings(settings);
 
-            return truBotCredentials;
-        }
-
-        public static TruBotAuthentication GetTruBotAuthentication(string overrideBaseUrl)
-        {
-            TruBotAuthentication auth = new TruBotAuthentication
-            {
-                token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
-                sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
-            };
-                
-            if (string.IsNullOrEmpty(auth.token) || string.IsNullOrEmpty(auth.sid))
-            {
-                auth = Login(overrideBaseUrl);
-            }
-
-            return auth;
+            return authenticationResponse;
         }
     }
 }

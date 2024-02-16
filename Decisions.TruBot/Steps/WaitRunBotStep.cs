@@ -15,7 +15,7 @@ namespace Decisions.TruBot.Steps
     [Writable]
     [AutoRegisterStep("Run Bot and Wait", "Integration/TruBot/Bot")]
     [ShapeImageAndColorProvider(null, TruBotSettings.TRUBOT_IMAGES_PATH)]
-    public class WaitRunBotStep : ISyncStep, IDataConsumer
+    public class WaitRunBotStep : IAsyncStep, IDataConsumer
     {
         private const string PATH_DONE = "Done";
         private const string TRUBOT_RESPONSE = "TruBot Response";
@@ -32,29 +32,27 @@ namespace Decisions.TruBot.Steps
             set => overrideBaseUrl = value;
         }
 
-        public ResultData Run(StepStartData data)
+        public void Start(StepStartData data)
         {
             int botId = data.Data[BOT_ID] as int? ?? 0;
 
             DateTime startTime = DateTime.Now;
-            
-            ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
-            TruBotProcess botProcess = new TruBotProcess(FlowEngine.CurrentFlow.Name, botId, startTime);
-            TruBotThreadJob.StartThreadJob(botProcess);
-
-            botProcessOrm.Store(botProcess);
 
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(OverrideBaseUrl);
             string runUrl = $"{baseUrl}/RunBot";
 
             Dictionary<string, object> resultData = new Dictionary<string, object>();
             
-            string? statusResponse;
+            TruBotAuthentication auth = new TruBotAuthentication
+            {
+                Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
+                Sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
+            };
+
+            TruBotProcess botProcess;
             TruBotResponse response = new TruBotResponse();
             try
             {
-                TruBotAuthentication auth = TruBotAuthentication.GetTruBotAuthentication(overrideBaseUrl);
-                
                 BotIdRequest inputs = new BotIdRequest();
                 inputs.BotId = botId;
                 
@@ -62,32 +60,18 @@ namespace Decisions.TruBot.Steps
                 
                 string result = TruBotRest.TruBotPost(runUrl, auth, content);
                 response = TruBotResponse.JsonDeserialize(result);
-
-                if (response.Status == 401)
-                {
-                    result = TruBotRest.TruBotPost(runUrl, TruBotAuthentication.Login(overrideBaseUrl), content);
-                    response = TruBotResponse.JsonDeserialize(result);
-                }
                 
-                JobExecutionIdRequest statusRequestInput = new JobExecutionIdRequest();
-                statusRequestInput.JobExecutionId = response.JobExecutionId;
-                
-                JsonContent statusContent = JsonContent.Create(statusRequestInput);
+                ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
+                botProcess = new TruBotProcess(FlowEngine.CurrentFlow.Name, botId, response.BotName, startTime, baseUrl, response.JobExecutionId);
+                TruBotThreadJob.StartThreadJob(botProcess);
 
-                statusResponse = response.JobStatus;
-                while ((statusResponse == "Deploying" || statusResponse == "In Progress"))
-                {
-                    Thread.Sleep(15000);
-                    
-                    statusResponse = JobStatusResponse.JsonDeserialize(
-                        TruBotRest.TruBotPost($"{baseUrl}/GetJobStatus", auth, statusContent)).Status;
-                }
+                botProcessOrm.Store(botProcess);
             }
             catch (Exception ex)
             {
                 throw new BusinessRuleException("The request to TruBot was unsuccessful.", ex);
             }
-            
+
             TruBotResponse truBotResponse = new TruBotResponse
             {
                 Status = response.Status,
@@ -96,22 +80,11 @@ namespace Decisions.TruBot.Steps
                 BotName = response.BotName,
                 BotStationName = response.BotStationName,
                 JobId = response.JobId,
-                JobStatus = statusResponse ?? response.JobStatus,
+                JobStatus = response.JobStatus ?? botProcess.Status,
                 JobExecutionId = response.JobExecutionId
             };
             
             resultData.Add(TRUBOT_RESPONSE, truBotResponse);
-            
-            botProcess.BotName = truBotResponse.BotName;
-            botProcess.Status = "Completed";
-
-            TimeSpan stepDuration = DateTime.Now - botProcess.StartTime;
-            botProcess.StepDuration = $"{stepDuration.Duration().Hours}:{stepDuration.Duration().Minutes}:{stepDuration.Duration().Seconds}";
-            
-            botProcessOrm.Store(botProcess);
-            TruBotThreadJob.CompleteThreadJob(botProcess);
-            
-            return new ResultData(PATH_DONE, resultData);
         }
         
         public OutcomeScenarioData[] OutcomeScenarios

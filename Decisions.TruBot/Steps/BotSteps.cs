@@ -23,11 +23,15 @@ namespace Decisions.TruBot.Steps
 
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(overrideBaseUrl);
             string url = $"{baseUrl}/RunBot";
+            
+            TruBotAuthentication auth = new TruBotAuthentication
+            {
+                Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
+                Sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
+            };
 
             try
             {
-                TruBotAuthentication auth = TruBotAuthentication.GetTruBotAuthentication(overrideBaseUrl);
-                
                 BotIdRequest inputs = new BotIdRequest();
                 inputs.BotId = botId;
                 
@@ -35,12 +39,6 @@ namespace Decisions.TruBot.Steps
                 
                 string result = TruBotRest.TruBotPost(url, auth, content);
                 TruBotResponse response = TruBotResponse.JsonDeserialize(result);
-                
-                if (response.Status == 401)
-                {
-                    result = TruBotRest.TruBotPost(url, TruBotAuthentication.Login(overrideBaseUrl), content);
-                    response = TruBotResponse.JsonDeserialize(result);
-                }
 
                 return response;
             }
@@ -50,7 +48,7 @@ namespace Decisions.TruBot.Steps
             }
         }
 
-        public JobStatusResponse GetJobStatusByJobId(TruBotAuthentication authentication, int jobId,
+        public JobStatusResponse GetJobStatusByJobId(int jobId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             if (jobId == null)
@@ -59,6 +57,12 @@ namespace Decisions.TruBot.Steps
             }
 
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(overrideBaseUrl);
+            
+            TruBotAuthentication auth = new TruBotAuthentication
+            {
+                Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
+                Sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
+            };
 
             try
             {
@@ -67,7 +71,7 @@ namespace Decisions.TruBot.Steps
                 
                 JsonContent content = JsonContent.Create(inputs);
                 
-                string result = TruBotRest.TruBotPost($"{baseUrl}/GetJobStatus", authentication, content);
+                string result = TruBotRest.TruBotPost($"{baseUrl}/GetJobStatus", auth, content);
                 
                 return JobStatusResponse.JsonDeserialize(result);
             }
@@ -77,7 +81,7 @@ namespace Decisions.TruBot.Steps
             }
         }
         
-        public JobStatusResponse GetJobStatusByJobExecutionId(TruBotAuthentication authentication, string jobExecutionId,
+        public JobStatusResponse GetJobStatusByJobExecutionId(string jobExecutionId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             if (string.IsNullOrEmpty(jobExecutionId))
@@ -86,6 +90,12 @@ namespace Decisions.TruBot.Steps
             }
 
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(overrideBaseUrl);
+            
+            TruBotAuthentication auth = new TruBotAuthentication
+            {
+                Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
+                Sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
+            };
 
             try
             {
@@ -94,7 +104,7 @@ namespace Decisions.TruBot.Steps
 
                 JsonContent content = JsonContent.Create(inputs);
                 
-                string result = TruBotRest.TruBotPost($"{baseUrl}/GetJobStatus", authentication, content);
+                string result = TruBotRest.TruBotPost($"{baseUrl}/GetJobStatus", auth, content);
                 
                 return JobStatusResponse.JsonDeserialize(result);
             }
@@ -104,10 +114,16 @@ namespace Decisions.TruBot.Steps
             }
         }
         
-        public JobDetailsResponse GetJobDetails(TruBotAuthentication authentication, DateTime fromInitiationDateTime, DateTime toInitiationDateTime, int? botId,
+        public JobDetailsResponse GetJobDetails(DateTime fromInitiationDateTime, DateTime toInitiationDateTime, int? botId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(overrideBaseUrl);
+            
+            TruBotAuthentication auth = new TruBotAuthentication
+            {
+                Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
+                Sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
+            };
 
             try
             {
@@ -128,7 +144,7 @@ namespace Decisions.TruBot.Steps
 
                 JsonContent content = (botId != null) ? JsonContent.Create(inputs) : JsonContent.Create(inputsNoId);
                 
-                string result = TruBotRest.TruBotPost($"{baseUrl}/GetJobDetails", authentication, content);
+                string result = TruBotRest.TruBotPost($"{baseUrl}/GetJobDetails", auth, content);
                 
                 return JobDetailsResponse.JsonDeserialize(result);
             }
@@ -138,7 +154,7 @@ namespace Decisions.TruBot.Steps
             }
         }
         
-        public BotVariablesValuesResponse GetBotVariablesValues(TruBotAuthentication authentication, string jobExecutionId, int botId, int jobId,
+        public BotVariablesValuesResponse GetBotVariablesValues(string jobExecutionId, int botId, int jobId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             if (string.IsNullOrEmpty(jobExecutionId))
@@ -157,6 +173,12 @@ namespace Decisions.TruBot.Steps
             }
 
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBotVariableValuesUrl(overrideBaseUrl);
+            
+            TruBotAuthentication auth = new TruBotAuthentication
+            {
+                Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
+                Sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
+            };
 
             try
             {
@@ -167,7 +189,7 @@ namespace Decisions.TruBot.Steps
                 
                 JsonContent content = JsonContent.Create(inputs);
                 
-                string result = TruBotRest.TruBotPost($"{baseUrl}", authentication, content);
+                string result = TruBotRest.TruBotPost($"{baseUrl}", auth, content);
                 
                 return BotVariablesValuesResponse.JsonDeserialize(result);
             }
@@ -177,7 +199,7 @@ namespace Decisions.TruBot.Steps
             }
         }
         
-        public ProcessInformationResponse GetProcessInformationByName(TruBotAuthentication authentication, string processName,
+        public ProcessInformationResponse GetProcessInformationByName(string processName,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             if (string.IsNullOrEmpty(processName))
@@ -186,6 +208,12 @@ namespace Decisions.TruBot.Steps
             }
 
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetProcessInformationUrl(overrideBaseUrl);
+            
+            TruBotAuthentication auth = new TruBotAuthentication
+            {
+                Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
+                Sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
+            };
 
             try
             {
@@ -194,7 +222,7 @@ namespace Decisions.TruBot.Steps
                 
                 JsonContent content = JsonContent.Create(inputs);
                 
-                string result = TruBotRest.TruBotPost($"{baseUrl}", authentication, content);
+                string result = TruBotRest.TruBotPost($"{baseUrl}", auth, content);
                 
                 return ProcessInformationResponse.JsonDeserialize(result);
             }
@@ -204,7 +232,7 @@ namespace Decisions.TruBot.Steps
             }
         }
         
-        public ProcessInformationResponse GetProcessInformationByBotId(TruBotAuthentication authentication, int botId,
+        public ProcessInformationResponse GetProcessInformationByBotId(int botId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             if (botId == null)
@@ -213,6 +241,12 @@ namespace Decisions.TruBot.Steps
             }
 
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetProcessInformationUrl(overrideBaseUrl);
+            
+            TruBotAuthentication auth = new TruBotAuthentication
+            {
+                Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
+                Sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
+            };
 
             try
             {
@@ -221,7 +255,7 @@ namespace Decisions.TruBot.Steps
                 
                 JsonContent content = JsonContent.Create(inputs);
                 
-                string result = TruBotRest.TruBotPost($"{baseUrl}", authentication, content);
+                string result = TruBotRest.TruBotPost($"{baseUrl}", auth, content);
 
                 return ProcessInformationResponse.JsonDeserialize(result);
             }

@@ -13,7 +13,7 @@ namespace Decisions.TruBot.Steps
     [ShapeImageAndColorProvider(null, TruBotSettings.TRUBOT_IMAGES_PATH)]
     public class BotLogSteps
     {
-        public BotTransactionLogResponse GetBotTransactionLog(TruBotAuthentication authentication, string jobExecutionId,
+        public BotTransactionLogResponse GetBotTransactionLog(string jobExecutionId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             if (string.IsNullOrEmpty(jobExecutionId))
@@ -22,6 +22,12 @@ namespace Decisions.TruBot.Steps
             }
 
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotLogUrl(overrideBaseUrl);
+            
+            TruBotAuthentication auth = new TruBotAuthentication
+            {
+                Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
+                Sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
+            };
 
             try
             {
@@ -30,7 +36,7 @@ namespace Decisions.TruBot.Steps
 
                 JsonContent content = JsonContent.Create(inputs);
                 
-                string result = TruBotRest.TruBotPost($"{baseUrl}/GetBotTransactionLogs", authentication, content);
+                string result = TruBotRest.TruBotPost($"{baseUrl}/GetBotTransactionLogs", auth, content);
                 
                 return BotTransactionLogResponse.JsonDeserialize(result);
             }
@@ -40,8 +46,7 @@ namespace Decisions.TruBot.Steps
             }
         }
         
-        public void DownloadBotTransactionLog(
-            TruBotAuthentication authentication, string jobExecutionId, string destinationDirectory,
+        public void DownloadBotTransactionLog(string jobExecutionId, string destinationDirectory,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
             if (string.IsNullOrEmpty(jobExecutionId))
@@ -50,6 +55,12 @@ namespace Decisions.TruBot.Steps
             }
 
             string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotLogUrl(overrideBaseUrl);
+            
+            TruBotAuthentication auth = new TruBotAuthentication
+            {
+                Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
+                Sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
+            };
 
             try
             {
@@ -58,7 +69,7 @@ namespace Decisions.TruBot.Steps
 
                 JsonContent content = JsonContent.Create(inputs);
 
-                TruBotRest.TruBotDownload($"{baseUrl}/DownloadBotTransactionLog", destinationDirectory, jobExecutionId, authentication, content);
+                TruBotRest.TruBotDownload($"{baseUrl}/DownloadBotTransactionLog", destinationDirectory, jobExecutionId, auth, content);
             }
             catch (Exception ex)
             {

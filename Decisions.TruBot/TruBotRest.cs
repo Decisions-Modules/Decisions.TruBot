@@ -11,8 +11,8 @@ public class TruBotRest
         HttpClient client = HttpClients.GetHttpClient(HttpClientAuthType.Normal);
         
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-        request.Headers.Add("UD-MS", authentication.sid);
-        request.Headers.Add("Authorization", $"Bearer {authentication.token}");
+        request.Headers.Add("UD-MS", authentication.Sid);
+        request.Headers.Add("Authorization", $"Bearer {authentication.Token}");
         
         request.Content = content;
         
@@ -30,8 +30,8 @@ public class TruBotRest
         HttpClient client = HttpClients.GetHttpClient(HttpClientAuthType.Normal);
         
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-        request.Headers.Add("UD-MS", authentication.sid);
-        request.Headers.Add("Authorization", $"Bearer {authentication.token}");
+        request.Headers.Add("UD-MS", authentication.Sid);
+        request.Headers.Add("Authorization", $"Bearer {authentication.Token}");
         
         request.Content = content;
         

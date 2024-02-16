@@ -33,6 +33,12 @@ namespace Decisions.TruBot.Data
         
         [ORMField]
         public string StepDuration { get; set; }
+        
+        [ORMField]
+        public string UsedUrl { get; set; }
+        
+        [ORMField]
+        public string JobExecutionId { get; set; }
 
         public override void BeforeSave()
         {
@@ -45,13 +51,16 @@ namespace Decisions.TruBot.Data
 
         static ORM<TruBotProcess> orm = new();
 
-        public TruBotProcess(string workflowName, int botId, DateTime startTime)
+        public TruBotProcess(string workflowName, int botId, string botName, DateTime startTime, string usedUrl, string jobExecutionId)
         {
             Id = IDUtility.GetNewIdString();
             WorkflowName = workflowName;
             BotId = botId;
+            BotName = botName;
             Status = "Started";
             StartTime = startTime;
+            UsedUrl = usedUrl;
+            JobExecutionId = jobExecutionId;
         }
 
         internal static TruBotProcess GetTruBotProcess(string truBotProcessId)
