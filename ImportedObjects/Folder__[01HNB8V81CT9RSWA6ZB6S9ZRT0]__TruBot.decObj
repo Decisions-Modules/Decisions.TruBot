@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ExportDescription xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>TruBot</Name>
+  <ParentFolderId>COMPONENTS FOLDER</ParentFolderId>
+  <ParentFolderPath>System/Designers/Catalog</ParentFolderPath>
+  <TypeName>DecisionsFramework.ServiceLayer.Services.Folder.Folder</TypeName>
+  <ShortTypeName>Designer Folder</ShortTypeName>
+  <Id>01HNB8V81CT9RSWA6ZB6S9ZRT0</Id>
+  <ExportedBy>shawn.lirette@decisions.com</ExportedBy>
+  <ExportedOn>2024-02-19T16:46:32.8880255-05:00</ExportedOn>
+  <PlatformVersion>8.18.0.72887</PlatformVersion>
+  <DependsOn />
+  <DependsOnAssemblies />
+  <StructureImport>false</StructureImport>
+  <DependsOnStructures>false</DependsOnStructures>
+  <Size>684</Size>
+  <Data>SnNvblN0b3JhZ2VQSwMEFAAACAgA0IVTWJOtpIspAgAAHgQAAAsAAABKc29uU3RvcmFnZYxTXW/aMBT9K1GeoxBoxWglpJEPVlZIEMmo1pfJJBdi1bGR7YBQ1f++65AEbZOmvgTd43OPj++5vNue/fhub83nV5asE/97FGT2o+dg+XMdxbNVZD/aIeRUUcHVXJIKzkK+uSnIE81hSS4gu0K5c8EKrK8/jvVvn2NtQRpoOnGHE9dzPccKaqZrCVMOtZaEOda63jGaP8MlE2/Ap7xmzHZsUlSUU4UULeSWwjnh7ILm9uaMsYwcVEg0QcQA/BKUlBUSeChioZ/ICVLIa0m16dGGIvOSnqDoJNoSNQAhD6GccB82QuiWkreKf4k1RxKwr/BNrUpy5i6jErSGr0U3AzcX1Y2Z8Pai8d3kfjS8Gz3cTcZfRvgxNwPXqH0d4yJEVpCs1kkcxVlqzZNlGG16UoyTRUIma1+YZ+2bJh9KcqJCZpcjfCLAH5oyqikmGIjqKDhKq+vtvWJjwxs+xf5kOxkG2cMmfZmNX/1x+vC6ybyel0jTdR3gFTEeWpchKHrgIK2bOIa7JrrEw/SiNFSDjqMGAcbJxGHQv60kKj3iU/YUCrMBbZIGrndXSdVhtCiAt+lQXgKGtQZZUdXMoWVRFRVUB+LY5UhVF2zrsIcbcz1omitRNE4+EXpH/V/mHJSm/LCEEzDk3COk/vCyMKs6XyYv1moWz75FK1yH2zaoUpwXPJMArT1V71bA624TmunvCf7X8CwEBrpf/bZKeBPbh2Obm7yPj98CDABQSwECMwAUAAAICADQhVNYk62kiykCAAAeBAAACwAAAAAAAAAAAAAAAAAAAAAASnNvblN0b3JhZ2VQSwUGAAAAAAEAAQA5AAAAUgIAAAAA</Data>
+  <RequiresApproval>false</RequiresApproval>
+  <OverridingImport>false</OverridingImport>
+  <ModuleName>Decisions.TruBot</ModuleName>
+  <ImportOrder>104</ImportOrder>
+  <ModifiedOn>2024-01-29T13:48:58.672386</ModifiedOn>
+  <BehaviorTypeName>DecisionsFramework.ServiceLayer.Utilities.ComponentsFolder</BehaviorTypeName>
+  <AllTagsData />
+  <TagData />
+</ExportDescription>

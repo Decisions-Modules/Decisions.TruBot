@@ -9,6 +9,7 @@ using DecisionsFramework.Design.Flow.Mapping;
 using DecisionsFramework.Design.Flow.StepImplementations;
 using DecisionsFramework.Design.Properties;
 using DecisionsFramework.ServiceLayer;
+using DecisionsFramework.Utilities;
 
 namespace Decisions.TruBot.Steps
 {
@@ -38,7 +39,7 @@ namespace Decisions.TruBot.Steps
 
             DateTime startTime = DateTime.Now;
 
-            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(OverrideBaseUrl);
+            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBotUrl(OverrideBaseUrl);
             string runUrl = $"{baseUrl}/RunBot";
 
             TruBotAuthentication auth = new TruBotAuthentication
@@ -58,7 +59,14 @@ namespace Decisions.TruBot.Steps
                 
                 string result = TruBotRest.TruBotPost(runUrl, auth, content);
                 response = TruBotResponse.JsonDeserialize(result);
+
+                ORM<TruBotRecordedBot> recordedBotOrm = new ORM<TruBotRecordedBot>();
+                TruBotRecordedBot recordedBot = new TruBotRecordedBot(response.BotId);
+                recordedBot.BotName = response.BotName;
+                recordedBot.LastRunOn = startTime;
                 
+                recordedBotOrm.Store(recordedBot);
+
                 ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
                 botProcess = new TruBotProcess
                 {

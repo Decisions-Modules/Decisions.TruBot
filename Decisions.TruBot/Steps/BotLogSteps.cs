@@ -21,7 +21,7 @@ namespace Decisions.TruBot.Steps
                 throw new BusinessRuleException("jobExecutionId cannot be null or empty.");
             }
 
-            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotLogUrl(overrideBaseUrl);
+            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBotLogUrl(overrideBaseUrl);
             
             TruBotAuthentication auth = new TruBotAuthentication
             {
@@ -54,7 +54,7 @@ namespace Decisions.TruBot.Steps
                 throw new BusinessRuleException("jobExecutionId cannot be null or empty.");
             }
 
-            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotLogUrl(overrideBaseUrl);
+            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBotLogUrl(overrideBaseUrl);
             
             TruBotAuthentication auth = new TruBotAuthentication
             {

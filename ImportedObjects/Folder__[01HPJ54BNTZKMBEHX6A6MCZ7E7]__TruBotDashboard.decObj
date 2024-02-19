@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ExportDescription xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>TruBot Dashboard</Name>
+  <ParentFolderId>01HNB8V81CT9RSWA6ZB6S9ZRT0</ParentFolderId>
+  <ParentFolderPath>System/Designers/Catalog/TruBot</ParentFolderPath>
+  <TypeName>DecisionsFramework.ServiceLayer.Services.Folder.Folder</TypeName>
+  <ShortTypeName>Folder</ShortTypeName>
+  <Id>01HPJ54BNTZKMBEHX6A6MCZ7E7</Id>
+  <ExportedBy>shawn.lirette@decisions.com</ExportedBy>
+  <ExportedOn>2024-02-19T16:46:32.8920978-05:00</ExportedOn>
+  <PlatformVersion>8.18.0.72887</PlatformVersion>
+  <DependsOn />
+  <DependsOnAssemblies />
+  <StructureImport>false</StructureImport>
+  <DependsOnStructures>false</DependsOnStructures>
+  <Size>686</Size>
+  <Data>SnNvblN0b3JhZ2VQSwMEFAAACAgA0IVTWH4pQH0rAgAAMwQAAAsAAABKc29uU3RvcmFnZZxT227iMBD9lSjPUQgCQopUacmFQgtJBBHd5WVlkoFYDTayHRCq+Pe1c6u6W61W++Jojs+Mz8yZvOuWPnnXt+r4mURx5D4HXqJPLEOGP+IgnK4CfaL7kGKOKeEzhk5wpezN3AC74BSW6AasDbg5o0Um4/pjaH/mGdoWmIIeHbPvmJZpGZpXFqJk8EigFAwVhhaX+wKnL3BL6BuQR1IWhW7oKDthgrmkCMq2GK4RKW5S3EHdkZuX4yJjQHwaUjFHF9hAWjIsOgpLc3yB7LfQRwIkZEkoRcSFNaWioaRNxS+KpQxkXuaqmOfoSswCMxACvmVty2ZKTx/MiDQP2QNnOBgOxrY9ckbWuO+ol4EIWbue2sJXcvrz0HW2Tt9LHtab16m9c+3Nw26dfLBDOVHJTFjpUqH5iOd7ilgm7w9VHRdydMGUJbcz/IeFPhyQ9GX2qVZXvBUZP4+GbpjsXlZuMP9uT+2VtxsH444XMXk0460RJaeRXtdWN9LgGIlcYpsbF3Dq+cDxkchN6XlIoIIee3WfvS/azRHfnGV3BwyZWgtZRTRwua/f4I1tOc4yIE2ASQ7S0hjYCfNqNE0m5kGGhUfPrduYt/Y3kju4UtuBKvlEs0rJP6xGS/3bZhDgApPjEi5QSM5IQvyTloVa6NkyetVW03D6FKyCMNFm0dIP1oqb0+uCJAygkcfL/QpI2RmqFqMyWt75UIDofpAmikhl393Q1UvW/f5LAAEGAFBLAQIzABQAAAgIANCFU1h+KUB9KwIAADMEAAALAAAAAAAAAAAAAAAAAAAAAABKc29uU3RvcmFnZVBLBQYAAAAAAQABADkAAABUAgAAAAA=</Data>
+  <RequiresApproval>false</RequiresApproval>
+  <OverridingImport>false</OverridingImport>
+  <ModuleName>Decisions.TruBot</ModuleName>
+  <ImportOrder>105</ImportOrder>
+  <ModifiedOn>2024-02-13T16:14:25.850718</ModifiedOn>
+  <BehaviorTypeName>DecisionsFramework.ServiceLayer.Services.Folder.DefaultFolderBehavior</BehaviorTypeName>
+  <TagData />
+</ExportDescription>

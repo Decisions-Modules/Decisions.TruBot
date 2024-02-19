@@ -21,7 +21,7 @@ namespace Decisions.TruBot.Steps
                 throw new BusinessRuleException("botId cannot be null.");
             }
 
-            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(overrideBaseUrl);
+            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBotUrl(overrideBaseUrl);
             string url = $"{baseUrl}/RunBot";
             
             TruBotAuthentication auth = new TruBotAuthentication
@@ -56,7 +56,7 @@ namespace Decisions.TruBot.Steps
                 throw new BusinessRuleException("jobId cannot be null.");
             }
 
-            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(overrideBaseUrl);
+            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBotUrl(overrideBaseUrl);
             
             TruBotAuthentication auth = new TruBotAuthentication
             {
@@ -89,7 +89,7 @@ namespace Decisions.TruBot.Steps
                 throw new BusinessRuleException("jobExecutionId cannot be null or empty.");
             }
 
-            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(overrideBaseUrl);
+            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBotUrl(overrideBaseUrl);
             
             TruBotAuthentication auth = new TruBotAuthentication
             {
@@ -117,7 +117,7 @@ namespace Decisions.TruBot.Steps
         public JobDetailsResponse GetJobDetails(DateTime fromInitiationDateTime, DateTime toInitiationDateTime, int? botId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
-            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseBotUrl(overrideBaseUrl);
+            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBotUrl(overrideBaseUrl);
             
             TruBotAuthentication auth = new TruBotAuthentication
             {

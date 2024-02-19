@@ -8,9 +8,7 @@ namespace Decisions.TruBot.Data
     [ORMEntity("trubot_recorded_bots")]
     public class TruBotRecordedBot : AbstractFolderEntity
     {
-        public TruBotRecordedBot()
-        {
-        }
+        public TruBotRecordedBot() {}
 
         [ORMPrimaryKeyField]
         [PropertyHidden]
@@ -46,8 +44,7 @@ namespace Decisions.TruBot.Data
 
             if (bot != null)
             {
-                orm.UpdateAndRefetch(typeof(TruBotRecordedBot), new SqlStatementCommand(
-                    $"INSERT INTO trubot_recorded_bots (last_run_on) VALUES ({DateTime.Now})"));
+                orm.Fetch(typeof(TruBotRecordedBot));
 
                 bot = GetTruBotRecordByBotId(botId);
 

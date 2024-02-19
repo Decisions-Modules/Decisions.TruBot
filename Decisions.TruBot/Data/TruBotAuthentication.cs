@@ -39,7 +39,7 @@ namespace Decisions.TruBot.Data
             }
 
             HttpClient client = HttpClients.GetHttpClient(HttpClientAuthType.Normal);
-            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBaseAccountUrl(overrideBaseUrl);
+            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetAccountUrl(overrideBaseUrl);
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/Login");
             

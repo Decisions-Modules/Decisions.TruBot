@@ -29,7 +29,7 @@ public class TruBotSettings : AbstractModuleSettings, IInitializable, INotifyPro
     }
     
     [ORMField]
-    private string baseUrl = "http://localhost:56498/CockpitPublicWebApi/api";
+    private string baseUrl = "http://localhost:56498";
      
     [ORMField]
     private string username = "";
@@ -121,7 +121,8 @@ public class TruBotSettings : AbstractModuleSettings, IInitializable, INotifyPro
         }
     }
 
-    public string GetBaseUrl(string? overrideBaseUrl) {
+    public string GetBaseUrl(string? overrideBaseUrl)
+    {
         string url = baseUrl;
         if (!string.IsNullOrEmpty(overrideBaseUrl)) 
             url = overrideBaseUrl;
@@ -129,29 +130,34 @@ public class TruBotSettings : AbstractModuleSettings, IInitializable, INotifyPro
         return url;
     }
 
-    public string GetBaseAccountUrl(string? overrideBaseUrl) 
+    public string GetApiUrl(string? overrideBaseUrl)
     {
-        return $"{GetBaseUrl(overrideBaseUrl)}/Account";
-    }
-    
-    public string GetBaseBotUrl(string? overrideBaseUrl) 
-    {
-        return $"{GetBaseUrl(overrideBaseUrl)}/Bot";
+        return $"{GetBaseUrl(overrideBaseUrl)}/CockpitPublicWebApi/api";
     }
 
-    public string GetBaseBotLogUrl(string? overrideBaseUrl)
+    public string GetAccountUrl(string? overrideBaseUrl) 
     {
-        return $"{GetBaseUrl(overrideBaseUrl)}/BotLog";
+        return $"{GetApiUrl(overrideBaseUrl)}/Account";
+    }
+    
+    public string GetBotUrl(string? overrideBaseUrl) 
+    {
+        return $"{GetApiUrl(overrideBaseUrl)}/Bot";
+    }
+
+    public string GetBotLogUrl(string? overrideBaseUrl)
+    {
+        return $"{GetApiUrl(overrideBaseUrl)}/BotLog";
     }
     
     public string GetBotVariableValuesUrl(string? overrideBaseUrl)
     {
-        return $"{GetBaseUrl(overrideBaseUrl)}/parameter/BotVariableValues";
+        return $"{GetApiUrl(overrideBaseUrl)}/parameter/BotVariableValues";
     }
     
     public string GetProcessInformationUrl(string? overrideBaseUrl)
     {
-        return $"{GetBaseUrl(overrideBaseUrl)}/bot/GetProcessInformation";
+        return $"{GetApiUrl(overrideBaseUrl)}/bot/GetProcessInformation";
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
