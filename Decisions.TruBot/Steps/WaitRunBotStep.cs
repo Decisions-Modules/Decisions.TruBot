@@ -9,7 +9,6 @@ using DecisionsFramework.Design.Flow.Mapping;
 using DecisionsFramework.Design.Flow.StepImplementations;
 using DecisionsFramework.Design.Properties;
 using DecisionsFramework.ServiceLayer;
-using DecisionsFramework.Utilities;
 
 namespace Decisions.TruBot.Steps
 {

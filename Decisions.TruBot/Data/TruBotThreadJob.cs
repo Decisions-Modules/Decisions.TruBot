@@ -4,7 +4,6 @@ using Decisions.TruBot.Api;
 using DecisionsFramework;
 using DecisionsFramework.Data.ORMapper;
 using DecisionsFramework.Design.Flow;
-using DecisionsFramework.Design.Flow.Mapping;
 using DecisionsFramework.ServiceLayer;
 using DecisionsFramework.Utilities;
 
@@ -148,16 +147,16 @@ namespace Decisions.TruBot.Data
                     List<string> ids = new List<string>();
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                        var val = dr[0].ToString();
+                        string? val = dr[0].ToString();
                         if (!string.IsNullOrEmpty(val))
                         {
                             ids.Add(val);
                         }
                     }
                     
-                    foreach (string id in ids)
+                    foreach (string processId in ids)
                     {
-                        StartThreadJob(GetProcessById(id));
+                        StartThreadJob(GetProcessById(processId));
                     }
                 }
             }
