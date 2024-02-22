@@ -1,4 +1,3 @@
-using System.Data;
 using System.Net.Http.Json;
 using Decisions.TruBot.Api;
 using DecisionsFramework;
@@ -138,31 +137,19 @@ namespace Decisions.TruBot.Data
         {
             try
             {
-                var executeStatement = new ExecuteStoredProcedureWithReturn("GetTruBotProcessesToStart");
-                DynamicORM dorm = new DynamicORM();
-                DataSet ds = dorm.RunQuery(executeStatement);
+                TruBotProcess[] processes = TruBotProcess.GetRunningTruBotProcesses();
 
-                if (ds.Tables[0].Rows.Count > 0)
+                if (processes.Length > 0)
                 {
-                    List<string> ids = new List<string>();
-                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    foreach (TruBotProcess process in processes)
                     {
-                        string? val = dr[0].ToString();
-                        if (!string.IsNullOrEmpty(val))
-                        {
-                            ids.Add(val);
-                        }
-                    }
-                    
-                    foreach (string processId in ids)
-                    {
-                        StartThreadJob(GetProcessById(processId));
+                        StartThreadJob(process);
                     }
                 }
             }
             catch (Exception ex)
             {
-                log.Debug($"Error occured while retrieving queued TruBot processes. ({ex.Message})");
+                log.Error($"Error occured while retrieving queued TruBot processes. ({ex.Message})");
             }
         }
     }

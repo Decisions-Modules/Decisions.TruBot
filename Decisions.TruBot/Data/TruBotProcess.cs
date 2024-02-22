@@ -62,7 +62,7 @@ namespace Decisions.TruBot.Data
         {
             return orm.Fetch(new WhereCondition[]
             {
-                new FieldWhereCondition("id", QueryMatchType.Equals, truBotProcessId)
+                new FieldWhereCondition("Id", QueryMatchType.Equals, truBotProcessId)
             }).FirstOrDefault();
         }
         
@@ -70,7 +70,7 @@ namespace Decisions.TruBot.Data
         {
             return orm.Fetch(new WhereCondition[]
             {
-                new FieldWhereCondition("bot_id", QueryMatchType.Equals, truBotId)
+                new FieldWhereCondition("BotId", QueryMatchType.Equals, truBotId)
             }).FirstOrDefault();
         }
 
@@ -78,7 +78,8 @@ namespace Decisions.TruBot.Data
         {
             return orm.Fetch(new WhereCondition[]
             {
-                new FieldWhereCondition("status", QueryMatchType.Equals, "Started")
+                new FieldWhereCondition("Status", QueryMatchType.Equals, "Started"),
+                new FieldWhereCondition("Status", QueryMatchType.Equals, "Deployed")
             });
         }
     }

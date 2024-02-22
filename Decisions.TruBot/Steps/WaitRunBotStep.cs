@@ -80,6 +80,7 @@ namespace Decisions.TruBot.Steps
                 };
                 
                 botProcessOrm.Store(botProcess);
+                TruBotAssignmentHelper.CreateAssignment(botProcess);
                 TruBotThreadJob.StartThreadJob(botProcess);
             }
             catch (Exception ex)
