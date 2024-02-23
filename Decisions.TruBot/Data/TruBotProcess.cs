@@ -46,6 +46,8 @@ namespace Decisions.TruBot.Data
         public string UsedUrl { get; set; }
         
         public string JobExecutionId { get; set; }
+        
+        public string AssignmentId { get; set; }
 
         public override void BeforeSave()
         {
@@ -78,8 +80,8 @@ namespace Decisions.TruBot.Data
         {
             return orm.Fetch(new WhereCondition[]
             {
-                new FieldWhereCondition("Status", QueryMatchType.Equals, "Started"),
-                new FieldWhereCondition("Status", QueryMatchType.Equals, "Deployed")
+                new FieldWhereCondition("status", QueryMatchType.Equals, "Started"),
+                new FieldWhereCondition("status", QueryMatchType.Equals, "Deployed")
             });
         }
     }

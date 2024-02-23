@@ -1,3 +1,4 @@
+using DecisionsFramework;
 using DecisionsFramework.Data.ORMapper;
 using DecisionsFramework.ServiceLayer.Services.Assignments;
 using DecisionsFramework.ServiceLayer.Services.Folder;
@@ -7,6 +8,8 @@ namespace Decisions.TruBot.Data
 {
     public class TruBotAssignmentHelper
     {
+        private static Log log = new Log("TruBot Assignments");
+        
         public static void CreateAssignment(TruBotProcess truBotProcess, string interfaceId = TruBotConstants.TRUBOT_ASSIGNMENT_FOLDER_ID)
         {
             Folder interfaceFolder = FolderService.Instance.GetByID(UserContextHolder.GetCurrent(), interfaceId);
@@ -26,6 +29,10 @@ namespace Decisions.TruBot.Data
             };
             AssignmentService.Instance.Save(UserContextHolder.GetCurrent(), assignment);
             AssignmentService.Instance.AddAssignmentForRole(UserContextHolder.GetCurrent(), assignment.AssignmentId, TruBotConstants.TRUBOT_ASSIGNMENT_ROLE_ID);
+            
+            ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
+            truBotProcess.AssignmentId = assignment.AssignmentId;
+            botProcessOrm.Store(truBotProcess);
         }
 
         public static void InitializeAssignmentComponents()

@@ -20,7 +20,7 @@ namespace Decisions.TruBot.Data
 
         [WritableValue]
         private TruBotProcess truBotProcess;
-
+        
         public TruBotAssignmentHandler(TruBotProcess truBotProcess)
         {
             this.truBotProcess = truBotProcess;
@@ -28,17 +28,17 @@ namespace Decisions.TruBot.Data
 
         public BaseActionType[] GetAssignmentActions(AbstractUserContext userContext, Assignment assignment)
         {
-            if (truBotProcess == null)
+            if (string.IsNullOrEmpty(this.truBotProcess.Id))
                 throw new Exception("TruBot process is not defined");
-
-            currentAssignment = assignment;
 
             if (assignment.IsCurrent)
             {
+                this.currentAssignment = assignment;
+                
                 List<BaseActionType> actions = new List<BaseActionType>
                 {
                     new DisplayMethodReturnAction(
-                        "Ignore Assignment",
+                        "Ignore",
                         String.Format("Ignore {0}", truBotProcess.Id),
                         Ignore) {Order = 2}
                 };
@@ -111,7 +111,7 @@ namespace Decisions.TruBot.Data
             CloseAssignment(usercontext);
             return String.Format("The assignment for '{0}' has been closed", truBotProcess.Id);
         }
-        
+
         private void CloseAssignment(AbstractUserContext usercontext)
         {
             currentAssignment.Completed = true;

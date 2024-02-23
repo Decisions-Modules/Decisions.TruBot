@@ -4,11 +4,13 @@ using DecisionsFramework;
 using DecisionsFramework.Data.ORMapper;
 using DecisionsFramework.Design.Flow;
 using DecisionsFramework.ServiceLayer;
+using DecisionsFramework.ServiceLayer.Services.Assignments;
+using DecisionsFramework.ServiceLayer.Utilities;
 using DecisionsFramework.Utilities;
 
 namespace Decisions.TruBot.Data
 {
-    public class TruBotThreadJob : IThreadJob, IInitializable
+    public class TruBotThreadJob : IThreadJob
     {
         private static Log log = new Log("TruBot Queued Job");
         
@@ -105,6 +107,8 @@ namespace Decisions.TruBot.Data
                 return;
             }
 
+            AssignmentService.Instance.CompleteAssignment(UserContextHolder.GetCurrent(), process.AssignmentId);
+
             ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
             
             process.Status = "Completed";
@@ -131,26 +135,6 @@ namespace Decisions.TruBot.Data
                 throw new ArgumentNullException("processId");
 
             return AbstractEntity.GetEntityById(processId) as TruBotProcess;
-        }
-
-        public void Initialize()
-        {
-            try
-            {
-                TruBotProcess[] processes = TruBotProcess.GetRunningTruBotProcesses();
-
-                if (processes.Length > 0)
-                {
-                    foreach (TruBotProcess process in processes)
-                    {
-                        StartThreadJob(process);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Error occured while retrieving queued TruBot processes. ({ex.Message})");
-            }
         }
     }
 }
