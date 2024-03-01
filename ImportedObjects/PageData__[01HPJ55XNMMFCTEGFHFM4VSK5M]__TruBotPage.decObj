@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ExportDescription xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>TruBot Page</Name>
+  <ParentFolderId>01HPJ54BNTZKMBEHX6A6MCZ7E7</ParentFolderId>
+  <ParentFolderPath>System/Jobs and Events/TruBot/TruBot Dashboard</ParentFolderPath>
+  <TypeName>DecisionsFramework.ServiceLayer.Services.Folder.PageData</TypeName>
+  <ShortTypeName>Page Data</ShortTypeName>
+  <Id>01HPJ55XNMMFCTEGFHFM4VSK5M</Id>
+  <ExportedBy>shawn.lirette@decisions.com</ExportedBy>
+  <ExportedOn>2024-02-20T16:01:58.2006505-05:00</ExportedOn>
+  <PlatformVersion>8.18.0.72888</PlatformVersion>
+  <DependsOn>
+    <ExportDependency>
+      <Id>01HPJ3FHTY2HD3SDWX5JNRZ0YN</Id>
+      <Name>TruBot Page</Name>
+      <TypeName>DecisionsFramework.ServiceLayer.Services.ConfigurationStorage.ElementRegistration</TypeName>
+      <ShortTypeName>Page</ShortTypeName>
+      <IsDeclaredDependency>false</IsDeclaredDependency>
+    </ExportDependency>
+  </DependsOn>
+  <DependsOnAssemblies />
+  <StructureImport>false</StructureImport>
+  <DependsOnStructures>false</DependsOnStructures>
+  <Size>575</Size>
+  <Data>SnNvblN0b3JhZ2VQSwMEFAAACAgAPYBUWFDIvoe8AQAA6QIAAAsAAABKc29uU3RvcmFnZYxRXW/iMBD8KyjPUWSaUBAS0pV8HIVLiErEAS8nN16KVcdGjl0OVfz3W19DW6k66fIQeXZnZ8fjV49441dv7X6/qmW5nM7TuPLGxEe4LdPiLk+9sZdAzVuuZJtp2sBJ6edgBfqF1/CDnkFfQRtkSjDEJX2ChBrq975O+r01aFeajIL+KCAB8XuxFcZqmEiwRlPh90r7KHi9gHOlnkFOpBXC871jJ3ufoCfSn5XzwWBT5HkWV+n3bJbl0Xq1GOTIrJXc8yerqcFFK6M0Tn5Mhdms2t7MknCV/NwM5sXDjmwLnFIazTsSnhlvj4KeS0HNXummxXKsmqM1oP2KPgowSJIqB2mxtUfQcMkb2zxAq4R1ezulhv7+Uu8T/LB34IyBKzg1ypxEiwmg4TWH01KKcycO0nBzfov30/WjaVHtFvk0nW1u727zeDdMh+/sAhNHZqXtVJmeexOXjAZqgC0lBum6t+EoCqNwOOwPSRSRsP/XsmJ8z4H9g3NDPoSmzmF7oCcZCK7BGPjGrm8e1Kr5pPYfVKrrA38B1t36Cjsfbm0CGP07oUPLa9a8TRk3sTq+5XbxvXukksvljwADAFBLAQIzABQAAAgIAD2AVFhQyL6HvAEAAOkCAAALAAAAAAAAAAAAAAAAAAAAAABKc29uU3RvcmFnZVBLBQYAAAAAAQABADkAAADlAQAAAAA=</Data>
+  <RequiresApproval>false</RequiresApproval>
+  <OverridingImport>false</OverridingImport>
+  <ModuleName>Decisions.TruBot</ModuleName>
+  <ImportOrder>400</ImportOrder>
+  <ModifiedOn>2024-02-13T16:15:17.044032</ModifiedOn>
+  <TagData />
+</ExportDescription>
