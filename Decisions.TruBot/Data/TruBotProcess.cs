@@ -25,7 +25,7 @@ namespace Decisions.TruBot.Data
         public int BotId { get; set; }
         
         [ORMField]
-        public string BotName { get; set; }
+        public string? BotName { get; set; }
         
         [ORMField]
         public string Status { get; set; }
@@ -45,9 +45,11 @@ namespace Decisions.TruBot.Data
         
         public string UsedUrl { get; set; }
         
-        public string JobExecutionId { get; set; }
+        public string? JobExecutionId { get; set; }
         
         public string AssignmentId { get; set; }
+        
+        public int WaitTime { get; set; }
 
         public override void BeforeSave()
         {
@@ -62,10 +64,7 @@ namespace Decisions.TruBot.Data
 
         internal static TruBotProcess GetTruBotProcess(string truBotProcessId)
         {
-            return orm.Fetch(new WhereCondition[]
-            {
-                new FieldWhereCondition("Id", QueryMatchType.Equals, truBotProcessId)
-            }).FirstOrDefault();
+            return orm.Fetch(truBotProcessId);
         }
         
         internal static TruBotProcess GetTruBotProcessByBotId(string truBotId)
@@ -80,9 +79,19 @@ namespace Decisions.TruBot.Data
         {
             return orm.Fetch(new WhereCondition[]
             {
-                new FieldWhereCondition("status", QueryMatchType.Equals, "Started"),
-                new FieldWhereCondition("status", QueryMatchType.Equals, "Deployed")
+                new FieldWhereCondition("status", QueryMatchType.Equals, TruBotConstants.STATUS_STARTED),
+                new FieldWhereCondition("status", QueryMatchType.Equals, TruBotConstants.STATUS_DEPLOYING),
+                new FieldWhereCondition("status", QueryMatchType.Equals, TruBotConstants.STATUS_IN_PROGRESS)
             });
+        }
+
+        public static void StartProcess(TruBotProcess botProcess)
+        {
+            ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
+            botProcessOrm.Store(botProcess);
+            
+            TruBotAssignmentHelper.CreateAssignment(botProcess);
+            TruBotThreadJob.StartThreadJob(botProcess);
         }
     }
 }

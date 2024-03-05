@@ -3,7 +3,6 @@ using Decisions.TruBot.Api;
 using DecisionsFramework;
 using DecisionsFramework.Data.ORMapper;
 using DecisionsFramework.Design.ConfigurationStorage.Attributes;
-using DecisionsFramework.ServiceLayer;
 using DecisionsFramework.ServiceLayer.Actions;
 using DecisionsFramework.ServiceLayer.Actions.Common;
 using DecisionsFramework.ServiceLayer.Services.Assignments;
@@ -67,19 +66,13 @@ namespace Decisions.TruBot.Data
             {
                 TruBotAuthentication.Login(null, null, null);
                 
-                TruBotAuthentication auth = new TruBotAuthentication
-                {
-                    Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
-                    Sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
-                };
-
                 JobExecutionIdRequest statusRequest = new JobExecutionIdRequest
                 {
                     JobExecutionId = truBotProcess.JobExecutionId
                 };
 
                 JobStatusResponse statusResponse = JobStatusResponse.JsonDeserialize(
-                    TruBotRest.TruBotPost($"{truBotProcess.UsedUrl}/GetJobStatus", auth,
+                    TruBotRest.TruBotPost($"{truBotProcess.UsedUrl}/GetJobStatus",
                         JsonContent.Create(statusRequest)));
                 
 

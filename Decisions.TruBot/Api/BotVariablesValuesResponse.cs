@@ -1,10 +1,8 @@
-using System.Runtime.Serialization;
 using DecisionsFramework.Design.ConfigurationStorage.Attributes;
 using Newtonsoft.Json;
 
 namespace Decisions.TruBot.Api
 {
-    [DataContract]
     [Writable]
     public class BotVariablesValuesData
     {
@@ -32,7 +30,6 @@ namespace Decisions.TruBot.Api
         public bool? IsCyberarkPassword { get; set; }
     }
 
-    [DataContract]
     [Writable]
     public class BotVariablesValuesResponse
     {

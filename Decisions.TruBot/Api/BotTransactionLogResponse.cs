@@ -1,10 +1,8 @@
-using System.Runtime.Serialization;
 using DecisionsFramework.Design.ConfigurationStorage.Attributes;
 using Newtonsoft.Json;
 
 namespace Decisions.TruBot.Api
 {
-    [DataContract]
     [Writable]
     public class BotTransactionLogData
     {
@@ -113,7 +111,6 @@ namespace Decisions.TruBot.Api
         public string? Remarks { get; set; }
     }
 
-    [DataContract]
     [Writable]
     public class BotTransactionLogResponse
     {

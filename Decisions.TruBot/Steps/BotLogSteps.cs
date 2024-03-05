@@ -10,24 +10,16 @@ using DecisionsFramework.ServiceLayer;
 namespace Decisions.TruBot.Steps
 {
     [AutoRegisterMethodsOnClass(true, "Integration/TruBot/BotLog")]
-    [ShapeImageAndColorProvider(null, TruBotSettings.TRUBOT_IMAGES_PATH)]
+    [ShapeImageAndColorProvider(null, TruBotConstants.TRUBOT_IMAGES_PATH)]
     public class BotLogSteps
     {
+        private readonly TruBotSettings Settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+        
         public BotTransactionLogResponse GetBotTransactionLog(string jobExecutionId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
-            if (string.IsNullOrEmpty(jobExecutionId))
-            {
-                throw new BusinessRuleException("jobExecutionId cannot be null or empty.");
-            }
-
-            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBotLogUrl(overrideBaseUrl);
-            
-            TruBotAuthentication auth = new TruBotAuthentication
-            {
-                Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
-                Sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
-            };
+            string baseUrl = overrideBaseUrl ?? Settings.GetBotLogUrl();
+            string url = $"{baseUrl}/GetBotTransactionLogs";
 
             try
             {
@@ -36,7 +28,7 @@ namespace Decisions.TruBot.Steps
 
                 JsonContent content = JsonContent.Create(inputs);
                 
-                string result = TruBotRest.TruBotPost($"{baseUrl}/GetBotTransactionLogs", auth, content);
+                string result = TruBotRest.TruBotPost(url, content);
                 
                 return BotTransactionLogResponse.JsonDeserialize(result);
             }
@@ -49,18 +41,8 @@ namespace Decisions.TruBot.Steps
         public void DownloadBotTransactionLog(string jobExecutionId, string destinationDirectory,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
-            if (string.IsNullOrEmpty(jobExecutionId))
-            {
-                throw new BusinessRuleException("jobExecutionId cannot be null or empty.");
-            }
-
-            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBotLogUrl(overrideBaseUrl);
-            
-            TruBotAuthentication auth = new TruBotAuthentication
-            {
-                Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
-                Sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
-            };
+            string baseUrl = overrideBaseUrl ?? Settings.GetBotLogUrl();
+            string url = $"{baseUrl}/DownloadBotTransactionLog";
 
             try
             {
@@ -69,7 +51,7 @@ namespace Decisions.TruBot.Steps
 
                 JsonContent content = JsonContent.Create(inputs);
 
-                TruBotRest.TruBotDownload($"{baseUrl}/DownloadBotTransactionLog", destinationDirectory, jobExecutionId, auth, content);
+                TruBotRest.TruBotDownload(url, destinationDirectory, jobExecutionId, content);
             }
             catch (Exception ex)
             {

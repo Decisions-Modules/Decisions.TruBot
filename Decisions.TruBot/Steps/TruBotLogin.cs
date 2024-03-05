@@ -11,7 +11,7 @@ namespace Decisions.TruBot.Steps
 {
     [Writable]
     [AutoRegisterStep("TruBot Login", "Integration/TruBot")]
-    [ShapeImageAndColorProvider(null, TruBotSettings.TRUBOT_IMAGES_PATH)]
+    [ShapeImageAndColorProvider(null, TruBotConstants.TRUBOT_IMAGES_PATH)]
     public class TruBotLogin : ISyncStep, IDataConsumer
     {
         private const string PATH_DONE = "Done";
@@ -21,7 +21,7 @@ namespace Decisions.TruBot.Steps
         private string? overrideBaseUrl;
 
         [PropertyClassification(0, "Override Base URL", "Override Settings")]
-        public string OverrideBaseUrl
+        public string? OverrideBaseUrl
         {
             get => overrideBaseUrl;
             set => overrideBaseUrl = value;
@@ -38,23 +38,23 @@ namespace Decisions.TruBot.Steps
         }
         
         [WritableValue]
-        private string username;
+        private string? username;
 
         [BooleanPropertyHidden("OverrideCredentials", false)]
         [PropertyClassification(2, "Override Username", "Override Settings")]
-        public string Username
+        public string? Username
         {
             get => username;
             set => username = value;
         }
         
         [WritableValue]
-        private string password;
+        private string? password;
         
         [PasswordText]
         [BooleanPropertyHidden("OverrideCredentials", false)]
         [PropertyClassification(3, "Override Password", "Override Settings")]
-        public string Password
+        public string? Password
         {
             get => password;
             set => password = value;
@@ -62,13 +62,9 @@ namespace Decisions.TruBot.Steps
         
         public ResultData Run(StepStartData data)
         {
-            if (!OverrideCredentials)
-            {
-                Username = null;
-                Password = null;
-            }
-            
-            AuthenticationResponse authenticationResponse = TruBotAuthentication.Login(OverrideBaseUrl, Username, Password);
+            AuthenticationResponse authenticationResponse = (OverrideCredentials)
+                ? TruBotAuthentication.Login(OverrideBaseUrl, Username, Password)
+                : TruBotAuthentication.Login(OverrideBaseUrl, null, null);
 
             Dictionary<string, object> resultData = new Dictionary<string, object>();
             resultData.Add(AUTHENTICATION_RESPONSE, authenticationResponse);

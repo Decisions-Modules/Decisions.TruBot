@@ -25,23 +25,26 @@ namespace Decisions.TruBot.Data
             request.Headers.Add("sid", Sid);
             request.Headers.Add("token", Token);
         }
+
+        private static TruBotSettings Settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
         
-        public static AuthenticationResponse Login(string overrideBaseUrl, string username, string password)
+        public static AuthenticationResponse Login(string? overrideBaseUrl, string? username, string? password)
         {
             if (string.IsNullOrEmpty(username))
             {
-                username = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Username;
+                username = Settings.Username;
             }
 
             if (string.IsNullOrEmpty(password))
             {
-                password = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Password;
+                password = Settings.Password;
             }
 
             HttpClient client = HttpClients.GetHttpClient(HttpClientAuthType.Normal);
-            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetAccountUrl(overrideBaseUrl);
+            string baseUrl = overrideBaseUrl ?? Settings.GetAccountUrl();
+            string url = $"{baseUrl}/Login";
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/Login");
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
             
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
@@ -72,11 +75,10 @@ namespace Decisions.TruBot.Data
                 throw new BusinessRuleException("The login request to TruBot was unsuccessful.", ex);
             }
             
-            TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
-            settings.Token = authenticationResponse.Token;
-            settings.Sid = authenticationResponse.Sid;
+            Settings.Token = authenticationResponse.Token;
+            Settings.Sid = authenticationResponse.Sid;
             
-            ModuleSettingsAccessor<TruBotSettings>.SaveSettings(settings);
+            ModuleSettingsAccessor<TruBotSettings>.SaveSettings(Settings);
 
             return authenticationResponse;
         }

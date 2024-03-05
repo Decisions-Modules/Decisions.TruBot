@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Decisions.TruBot.Data;
 using DecisionsFramework;
 using DecisionsFramework.Data.ORMapper;
 using DecisionsFramework.Design.ConfigurationStorage.Attributes;
@@ -21,21 +20,19 @@ namespace Decisions.TruBot;
 [Writable]
 public class TruBotSettings : AbstractModuleSettings, IInitializable, INotifyPropertyChanged, IValidationSource
 {
-    internal const string TRUBOT_IMAGES_PATH = "../wwwroot/Content/CustomModuleImages/Decisions.TruBot/|trubot.svg";
-    
     public TruBotSettings()
     {
         this.EntityName = "TruBot Settings";
     }
     
     [ORMField]
-    private string baseUrl = "http://localhost:56498";
+    private string baseUrl;
      
     [ORMField]
-    private string username = "";
+    private string username;
      
     [ORMField]
-    private string password = "";
+    private string password;
      
     [ORMField]
     [PropertyHidden]
@@ -52,7 +49,7 @@ public class TruBotSettings : AbstractModuleSettings, IInitializable, INotifyPro
     {
         get
         {
-            return "A license for TruBot is needed. Learn more at:https://www.datamatics.com/lp/intelligent-automation/idp-trucap/partner/decisions?utm_source=decisions.com&utm_medium=module_link_click&utm_content=ad1";
+            return "A license for TruBot is needed. Learn more at: https://www.datamatics.com/lp/intelligent-automation/idp-trucap/partner/decisions?utm_source=decisions.com&utm_medium=module_link_click&utm_content=ad1";
         }
         set { }
     }
@@ -121,43 +118,34 @@ public class TruBotSettings : AbstractModuleSettings, IInitializable, INotifyPro
         }
     }
 
-    public string GetBaseUrl(string? overrideBaseUrl)
+    public string GetApiUrl()
     {
-        string url = baseUrl;
-        if (!string.IsNullOrEmpty(overrideBaseUrl)) 
-            url = overrideBaseUrl;
-
-        return url;
+        return $"{BaseUrl}/CockpitPublicWebApi/api";
     }
 
-    public string GetApiUrl(string? overrideBaseUrl)
+    public string GetAccountUrl() 
     {
-        return $"{GetBaseUrl(overrideBaseUrl)}/CockpitPublicWebApi/api";
-    }
-
-    public string GetAccountUrl(string? overrideBaseUrl) 
-    {
-        return $"{GetApiUrl(overrideBaseUrl)}/Account";
+        return $"{GetApiUrl()}/Account";
     }
     
-    public string GetBotUrl(string? overrideBaseUrl) 
+    public string GetBotUrl() 
     {
-        return $"{GetApiUrl(overrideBaseUrl)}/Bot";
+        return $"{GetApiUrl()}/Bot";
     }
 
-    public string GetBotLogUrl(string? overrideBaseUrl)
+    public string GetBotLogUrl()
     {
-        return $"{GetApiUrl(overrideBaseUrl)}/BotLog";
+        return $"{GetApiUrl()}/BotLog";
     }
     
-    public string GetBotVariableValuesUrl(string? overrideBaseUrl)
+    public string GetBotVariableValuesUrl()
     {
-        return $"{GetApiUrl(overrideBaseUrl)}/parameter/BotVariableValues";
+        return $"{GetApiUrl()}/parameter/BotVariableValues";
     }
     
-    public string GetProcessInformationUrl(string? overrideBaseUrl)
+    public string GetProcessInformationUrl()
     {
-        return $"{GetApiUrl(overrideBaseUrl)}/bot/GetProcessInformation";
+        return $"{GetApiUrl()}/bot/GetProcessInformation";
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

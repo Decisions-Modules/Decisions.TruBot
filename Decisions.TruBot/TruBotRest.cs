@@ -1,18 +1,20 @@
 using System.Net.Http.Json;
-using Decisions.TruBot.Data;
+using DecisionsFramework.ServiceLayer;
 using DecisionsFramework.Utilities.Data;
 
 namespace Decisions.TruBot;
 
 public class TruBotRest
 {
-    public static string TruBotPost(string url, TruBotAuthentication authentication, JsonContent content)
+    private static readonly TruBotSettings Settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+    
+    public static string TruBotPost(string url, JsonContent content)
     {
         HttpClient client = HttpClients.GetHttpClient(HttpClientAuthType.Normal);
         
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-        request.Headers.Add("UD-MS", authentication.Sid);
-        request.Headers.Add("Authorization", $"Bearer {authentication.Token}");
+        request.Headers.Add("UD-MS", Settings.Sid);
+        request.Headers.Add("Authorization", $"Bearer {Settings.Token}");
         
         request.Content = content;
         
@@ -25,13 +27,13 @@ public class TruBotRest
         return resultTask.Result;
     }
     
-    public static void TruBotDownload(string url, string destinationDirectory, string jobExecutionId, TruBotAuthentication authentication, JsonContent content)
+    public static void TruBotDownload(string url, string destinationDirectory, string? jobExecutionId, JsonContent content)
     {
         HttpClient client = HttpClients.GetHttpClient(HttpClientAuthType.Normal);
         
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-        request.Headers.Add("UD-MS", authentication.Sid);
-        request.Headers.Add("Authorization", $"Bearer {authentication.Token}");
+        request.Headers.Add("UD-MS", Settings.Sid);
+        request.Headers.Add("Authorization", $"Bearer {Settings.Token}");
         
         request.Content = content;
         
@@ -39,12 +41,11 @@ public class TruBotRest
         response.EnsureSuccessStatusCode();
         
         string[] contentName = response.Content.Headers.ContentDisposition.FileName.Split(".");
-        string fileName = contentName.First() + $"-{jobExecutionId}";
-        string fileType = contentName.Last();
+        string fileName = contentName.First() + $"-{jobExecutionId}.{contentName.Last()}";
 
         byte[] result = response.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult();
-
-        using (FileStream stream = new FileStream($"{destinationDirectory}/{fileName}.{fileType}", FileMode.Create, FileAccess.Write))
+        
+        using (FileStream stream = new FileStream(Path.Combine(destinationDirectory, fileName), FileMode.Create, FileAccess.Write))
         {
             stream.Write(result, 0, result.Length);
         }

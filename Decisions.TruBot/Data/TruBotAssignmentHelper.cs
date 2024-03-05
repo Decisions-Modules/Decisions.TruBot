@@ -9,6 +9,8 @@ namespace Decisions.TruBot.Data
     public class TruBotAssignmentHelper
     {
         private static Log log = new Log("TruBot Assignments");
+
+        static ORM<TruBotProcess> botProcessOrm = new();
         
         public static void CreateAssignment(TruBotProcess truBotProcess, string interfaceId = TruBotConstants.TRUBOT_ASSIGNMENT_FOLDER_ID)
         {
@@ -30,7 +32,6 @@ namespace Decisions.TruBot.Data
             AssignmentService.Instance.Save(UserContextHolder.GetCurrent(), assignment);
             AssignmentService.Instance.AddAssignmentForRole(UserContextHolder.GetCurrent(), assignment.AssignmentId, TruBotConstants.TRUBOT_ASSIGNMENT_ROLE_ID);
             
-            ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
             truBotProcess.AssignmentId = assignment.AssignmentId;
             botProcessOrm.Store(truBotProcess);
         }
@@ -57,6 +58,18 @@ namespace Decisions.TruBot.Data
                 truBotAssignmentRole.AssignmentRoleTypeId = TruBotConstants.TRUBOT_ASSIGNMENT_ROLE_ID;
                 assignmentRoleTypeORM.Store(truBotAssignmentRole);
             }
+        }
+
+        public static void CompleteAssignment(TruBotProcess process)
+        {
+            AssignmentService.Instance.CompleteAssignment(UserContextHolder.GetCurrent(), process.AssignmentId);
+
+            process.Status = TruBotConstants.STATUS_COMPLETED;
+            
+            TimeSpan stepDuration = DateTime.Now - process.StartTime;
+            process.StepDuration = $"{stepDuration.Duration().Hours}:{stepDuration.Duration().Minutes}:{stepDuration.Duration().Seconds}";
+            
+            botProcessOrm.Store(process);
         }
     }
 }

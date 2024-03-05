@@ -2,7 +2,6 @@ using System.Net.Http.Json;
 using Decisions.TruBot.Api;
 using Decisions.TruBot.Data;
 using DecisionsFramework;
-using DecisionsFramework.Data.ORMapper;
 using DecisionsFramework.Design.ConfigurationStorage.Attributes;
 using DecisionsFramework.Design.Flow;
 using DecisionsFramework.Design.Flow.Mapping;
@@ -14,41 +13,37 @@ namespace Decisions.TruBot.Steps
 {
     [Writable]
     [AutoRegisterStep("Run Bot and Wait", "Integration/TruBot/Bot")]
-    [ShapeImageAndColorProvider(null, TruBotSettings.TRUBOT_IMAGES_PATH)]
+    [ShapeImageAndColorProvider(null, TruBotConstants.TRUBOT_IMAGES_PATH)]
     public class WaitRunBotStep : IAsyncStep, IDataConsumer
     {
         private const string PATH_DONE = "Done";
         private const string TRUBOT_RESPONSE = "TruBot Status Response";
         
         private const string BOT_ID = "BotId";
+        private const string WAIT_TIME = "Seconds Between Status Updates";
         
         [WritableValue]
-        private string overrideBaseUrl;
+        private string? overrideBaseUrl;
 
         [PropertyClassification(0, "Override Base URL", "Override Settings")]
-        public string OverrideBaseUrl
+        public string? OverrideBaseUrl
         {
             get => overrideBaseUrl;
             set => overrideBaseUrl = value;
         }
+        
+        private readonly TruBotSettings Settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
 
         public void Start(StepStartData data)
         {
-            int botId = data.Data[BOT_ID] as int? ?? 0;
+            int botId = (int)data.Data[BOT_ID];
+            int waitTime = ((int)data.Data[WAIT_TIME] >= 15) ? (int)data.Data[WAIT_TIME] : 15;
 
             DateTime startTime = DateTime.Now;
 
-            string baseUrl = ModuleSettingsAccessor<TruBotSettings>.GetSettings().GetBotUrl(OverrideBaseUrl);
-            string runUrl = $"{baseUrl}/RunBot";
+            string baseUrl = OverrideBaseUrl ?? Settings.GetBotUrl();
+            string url = $"{baseUrl}/RunBot";
 
-            TruBotAuthentication auth = new TruBotAuthentication
-            {
-                Token = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Token,
-                Sid = ModuleSettingsAccessor<TruBotSettings>.GetSettings().Sid
-            };
-
-            TruBotProcess botProcess;
-            TruBotResponse response = new TruBotResponse();
             try
             {
                 BotIdRequest inputs = new BotIdRequest();
@@ -56,18 +51,12 @@ namespace Decisions.TruBot.Steps
                 
                 JsonContent content = JsonContent.Create(inputs);
                 
-                string result = TruBotRest.TruBotPost(runUrl, auth, content);
-                response = TruBotResponse.JsonDeserialize(result);
+                string result = TruBotRest.TruBotPost(url, content);
+                TruBotResponse response = TruBotResponse.JsonDeserialize(result);
 
-                ORM<TruBotRecordedBot> recordedBotOrm = new ORM<TruBotRecordedBot>();
-                TruBotRecordedBot recordedBot = new TruBotRecordedBot(response.BotId);
-                recordedBot.BotName = response.BotName;
-                recordedBot.LastRunOn = startTime;
-                
-                recordedBotOrm.Store(recordedBot);
+                TruBotRecordedBot.Create(response.BotId, response.BotName, startTime);
 
-                ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
-                botProcess = new TruBotProcess
+                TruBotProcess.StartProcess(new TruBotProcess
                 {
                     WorkflowName = FlowEngine.CurrentFlow.Name,
                     BotId = botId,
@@ -76,12 +65,9 @@ namespace Decisions.TruBot.Steps
                     FlowTrackingId = data.FlowTrackingID,
                     StepTrackingId = data.StepTrackingID,
                     UsedUrl = baseUrl,
-                    JobExecutionId = response.JobExecutionId
-                };
-                
-                botProcessOrm.Store(botProcess);
-                TruBotAssignmentHelper.CreateAssignment(botProcess);
-                TruBotThreadJob.StartThreadJob(botProcess);
+                    JobExecutionId = response.JobExecutionId,
+                    WaitTime = waitTime
+                });
             }
             catch (Exception ex)
             {

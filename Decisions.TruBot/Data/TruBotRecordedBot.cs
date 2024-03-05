@@ -8,7 +8,9 @@ namespace Decisions.TruBot.Data
     [ORMEntity("trubot_recorded_bots")]
     public class TruBotRecordedBot : AbstractFolderEntity
     {
-        public TruBotRecordedBot() {}
+        public TruBotRecordedBot()
+        {
+        }
 
         [ORMPrimaryKeyField]
         [PropertyHidden]
@@ -18,7 +20,7 @@ namespace Decisions.TruBot.Data
         public int BotId { get; set; }
         
         [ORMField]
-        public string BotName { get; set; }
+        public string? BotName { get; set; }
         
         [ORMField]
         public DateTime InitializedOn { get; set; }
@@ -26,16 +28,6 @@ namespace Decisions.TruBot.Data
         [ORMField]
         public DateTime LastRunOn { get; set; }
         
-
-        public override void BeforeSave()
-        {
-            if (string.IsNullOrEmpty(Id))
-            {
-                Id = IDUtility.GetNewIdString();
-            }
-            base.BeforeSave();
-        }
-
         static ORM<TruBotRecordedBot> orm = new();
 
         public TruBotRecordedBot(int botId)
@@ -44,8 +36,6 @@ namespace Decisions.TruBot.Data
 
             if (bot != null)
             {
-                orm.Fetch(typeof(TruBotRecordedBot));
-
                 bot = GetTruBotRecordByBotId(botId);
 
                 Id = bot.Id;
@@ -64,10 +54,7 @@ namespace Decisions.TruBot.Data
 
         internal static TruBotRecordedBot GetTruBotRecord(string truBotProcessId)
         {
-            return orm.Fetch(new WhereCondition[]
-            {
-                new FieldWhereCondition("id", QueryMatchType.Equals, truBotProcessId)
-            }).FirstOrDefault();
+            return orm.Fetch(truBotProcessId);
         }
         
         internal static TruBotRecordedBot GetTruBotRecordByBotId(int truBotId)
@@ -76,6 +63,18 @@ namespace Decisions.TruBot.Data
             {
                 new FieldWhereCondition("bot_id", QueryMatchType.Equals, truBotId)
             }).FirstOrDefault();
+        }
+
+        public static TruBotRecordedBot Create(int botId, string? botName, DateTime startTime)
+        {
+            ORM<TruBotRecordedBot> recordedBotOrm = new ORM<TruBotRecordedBot>();
+            TruBotRecordedBot recordedBot = new TruBotRecordedBot(botId);
+            recordedBot.BotName = botName;
+            recordedBot.LastRunOn = startTime;
+                
+            recordedBotOrm.Store(recordedBot);
+
+            return recordedBot;
         }
     }
 }
