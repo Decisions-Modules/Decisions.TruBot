@@ -32,16 +32,14 @@ namespace Decisions.TruBot.Steps
             set => overrideBaseUrl = value;
         }
         
-        private readonly TruBotSettings Settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
-
         public void Start(StepStartData data)
         {
+            TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+            
             int botId = (int)data.Data[BOT_ID];
             int waitTime = ((int)data.Data[WAIT_TIME] >= 15) ? (int)data.Data[WAIT_TIME] : 15;
 
-            DateTime startTime = DateTime.Now;
-
-            string baseUrl = OverrideBaseUrl ?? Settings.GetBotUrl();
+            string baseUrl = OverrideBaseUrl ?? settings.GetBotUrl();
             string url = $"{baseUrl}/RunBot";
 
             try
@@ -51,6 +49,7 @@ namespace Decisions.TruBot.Steps
                 
                 JsonContent content = JsonContent.Create(inputs);
                 
+                DateTime startTime = DateTime.Now;
                 string result = TruBotRest.TruBotPost(url, content);
                 TruBotResponse response = TruBotResponse.JsonDeserialize(result);
 
@@ -96,7 +95,8 @@ namespace Decisions.TruBot.Steps
                 List<DataDescription> input = new List<DataDescription>();
                 input.AddRange(new[]
                 {
-                    new DataDescription(typeof(int), BOT_ID)
+                    new DataDescription(typeof(int), BOT_ID),
+                    new DataDescription(typeof(int), WAIT_TIME)
                 });
             
                 return input.ToArray();

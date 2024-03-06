@@ -13,17 +13,11 @@ namespace Decisions.TruBot.Steps
     [ShapeImageAndColorProvider(null, TruBotConstants.TRUBOT_IMAGES_PATH)]
     public class BotSteps
     {
-        private readonly TruBotSettings Settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
-        
         public TruBotResponse RunBot(int botId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
-            if (botId == null)
-            {
-                throw new BusinessRuleException("botId cannot be null.");
-            }
-
-            string baseUrl = overrideBaseUrl ?? Settings.GetBotUrl();
+            TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+            string baseUrl = overrideBaseUrl ?? settings.GetBotUrl();
             string url = $"{baseUrl}/RunBot";
             
             try
@@ -33,8 +27,11 @@ namespace Decisions.TruBot.Steps
                 
                 JsonContent content = JsonContent.Create(inputs);
                 
+                DateTime startTime = DateTime.Now;
                 string result = TruBotRest.TruBotPost(url, content);
                 TruBotResponse response = TruBotResponse.JsonDeserialize(result);
+                
+                TruBotRecordedBot.Create(response.BotId, response.BotName, startTime);
 
                 return response;
             }
@@ -47,7 +44,8 @@ namespace Decisions.TruBot.Steps
         public JobStatusResponse GetJobStatusByJobId(int jobId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
-            string baseUrl = overrideBaseUrl ?? Settings.GetBotUrl();
+            TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+            string baseUrl = overrideBaseUrl ?? settings.GetBotUrl();
             string url = $"{baseUrl}/GetJobStatus";
             
             try
@@ -70,7 +68,8 @@ namespace Decisions.TruBot.Steps
         public JobStatusResponse GetJobStatusByJobExecutionId(string jobExecutionId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
-            string baseUrl = overrideBaseUrl ?? Settings.GetBotUrl();
+            TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+            string baseUrl = overrideBaseUrl ?? settings.GetBotUrl();
             string url = $"{baseUrl}/GetJobStatus";
             
             try
@@ -93,7 +92,8 @@ namespace Decisions.TruBot.Steps
         public JobDetailsResponse GetJobDetails(DateTime fromInitiationDateTime, DateTime toInitiationDateTime, int? botId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
-            string baseUrl = overrideBaseUrl ?? Settings.GetBotUrl();
+            TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+            string baseUrl = overrideBaseUrl ?? settings.GetBotUrl();
             string url = $"{baseUrl}/GetJobDetails";
             
             try
@@ -128,7 +128,8 @@ namespace Decisions.TruBot.Steps
         public BotVariablesValuesResponse GetBotVariablesValues(string jobExecutionId, int botId, int jobId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
-            string url = overrideBaseUrl ?? Settings.GetBotVariableValuesUrl();
+            TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+            string url = overrideBaseUrl ?? settings.GetBotVariableValuesUrl();
             
             try
             {
@@ -152,7 +153,8 @@ namespace Decisions.TruBot.Steps
         public ProcessInformationResponse GetProcessInformationByName(string processName,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
-            string url = overrideBaseUrl ?? Settings.GetProcessInformationUrl();
+            TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+            string url = overrideBaseUrl ?? settings.GetProcessInformationUrl();
             
             try
             {
@@ -176,7 +178,8 @@ namespace Decisions.TruBot.Steps
         public ProcessInformationResponse GetProcessInformationByBotId(int botId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
-            string url = overrideBaseUrl ?? Settings.GetProcessInformationUrl();
+            TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+            string url = overrideBaseUrl ?? settings.GetProcessInformationUrl();
             
             try
             {

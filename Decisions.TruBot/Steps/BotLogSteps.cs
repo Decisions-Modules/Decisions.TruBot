@@ -13,12 +13,11 @@ namespace Decisions.TruBot.Steps
     [ShapeImageAndColorProvider(null, TruBotConstants.TRUBOT_IMAGES_PATH)]
     public class BotLogSteps
     {
-        private readonly TruBotSettings Settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
-        
         public BotTransactionLogResponse GetBotTransactionLog(string jobExecutionId,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
-            string baseUrl = overrideBaseUrl ?? Settings.GetBotLogUrl();
+            TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+            string baseUrl = overrideBaseUrl ?? settings.GetBotLogUrl();
             string url = $"{baseUrl}/GetBotTransactionLogs";
 
             try
@@ -41,7 +40,8 @@ namespace Decisions.TruBot.Steps
         public void DownloadBotTransactionLog(string jobExecutionId, string destinationDirectory,
             [IgnoreMappingDefault, PropertyClassification(0, "Override Base URL", "Settings")] string? overrideBaseUrl)
         {
-            string baseUrl = overrideBaseUrl ?? Settings.GetBotLogUrl();
+            TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+            string baseUrl = overrideBaseUrl ?? settings.GetBotLogUrl();
             string url = $"{baseUrl}/DownloadBotTransactionLog";
 
             try

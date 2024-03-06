@@ -2,7 +2,6 @@ using System.Net.Http.Json;
 using Decisions.TruBot.Api;
 using DecisionsFramework;
 using DecisionsFramework.Design.Flow;
-using DecisionsFramework.ServiceLayer;
 
 namespace Decisions.TruBot.Data
 {
@@ -82,14 +81,6 @@ namespace Decisions.TruBot.Data
             
             FlowEngine flowEngine = FlowEngine.GetEngine(process.FlowTrackingId);
             flowEngine.Done(process.FlowTrackingId, process.StepTrackingId, new ResultData("Done", resultData));
-        }
-        
-        internal static TruBotProcess? GetProcessById(string processId)
-        {
-            if (String.IsNullOrEmpty(processId))
-                throw new ArgumentNullException("processId");
-
-            return AbstractEntity.GetEntityById(processId) as TruBotProcess;
         }
     }
 }

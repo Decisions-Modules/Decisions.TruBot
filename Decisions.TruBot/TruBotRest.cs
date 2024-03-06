@@ -6,15 +6,15 @@ namespace Decisions.TruBot;
 
 public class TruBotRest
 {
-    private static readonly TruBotSettings Settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
-    
     public static string TruBotPost(string url, JsonContent content)
     {
+        TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+        
         HttpClient client = HttpClients.GetHttpClient(HttpClientAuthType.Normal);
         
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-        request.Headers.Add("UD-MS", Settings.Sid);
-        request.Headers.Add("Authorization", $"Bearer {Settings.Token}");
+        request.Headers.Add("UD-MS", settings.Sid);
+        request.Headers.Add("Authorization", $"Bearer {settings.Token}");
         
         request.Content = content;
         
@@ -29,11 +29,13 @@ public class TruBotRest
     
     public static void TruBotDownload(string url, string destinationDirectory, string? jobExecutionId, JsonContent content)
     {
+        TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+        
         HttpClient client = HttpClients.GetHttpClient(HttpClientAuthType.Normal);
         
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-        request.Headers.Add("UD-MS", Settings.Sid);
-        request.Headers.Add("Authorization", $"Bearer {Settings.Token}");
+        request.Headers.Add("UD-MS", settings.Sid);
+        request.Headers.Add("Authorization", $"Bearer {settings.Token}");
         
         request.Content = content;
         

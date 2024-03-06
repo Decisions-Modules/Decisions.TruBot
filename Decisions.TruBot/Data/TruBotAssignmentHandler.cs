@@ -45,7 +45,7 @@ namespace Decisions.TruBot.Data
                 try
                 {
                     actions.Add(new DisplayMethodReturnAction(
-                        "Update if Finished",
+                        "Update Status",
                         String.Format("Check status for {0} and close assignment if completed or failed", truBotProcess.Id),
                         RefreshStatus) { Order = 1, RefreshScope = ActionRefreshScope.OwningFolder });
                 }

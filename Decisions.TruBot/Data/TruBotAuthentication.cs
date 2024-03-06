@@ -26,22 +26,22 @@ namespace Decisions.TruBot.Data
             request.Headers.Add("token", Token);
         }
 
-        private static TruBotSettings Settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
-        
         public static AuthenticationResponse Login(string? overrideBaseUrl, string? username, string? password)
         {
+            TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
+            
             if (string.IsNullOrEmpty(username))
             {
-                username = Settings.Username;
+                username = settings.Username;
             }
 
             if (string.IsNullOrEmpty(password))
             {
-                password = Settings.Password;
+                password = settings.Password;
             }
 
             HttpClient client = HttpClients.GetHttpClient(HttpClientAuthType.Normal);
-            string baseUrl = overrideBaseUrl ?? Settings.GetAccountUrl();
+            string baseUrl = overrideBaseUrl ?? settings.GetAccountUrl();
             string url = $"{baseUrl}/Login";
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
@@ -75,10 +75,10 @@ namespace Decisions.TruBot.Data
                 throw new BusinessRuleException("The login request to TruBot was unsuccessful.", ex);
             }
             
-            Settings.Token = authenticationResponse.Token;
-            Settings.Sid = authenticationResponse.Sid;
+            settings.Token = authenticationResponse.Token;
+            settings.Sid = authenticationResponse.Sid;
             
-            ModuleSettingsAccessor<TruBotSettings>.SaveSettings(Settings);
+            ModuleSettingsAccessor<TruBotSettings>.SaveSettings(settings);
 
             return authenticationResponse;
         }
