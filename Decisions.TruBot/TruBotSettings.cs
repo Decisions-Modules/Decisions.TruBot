@@ -25,6 +25,11 @@ namespace Decisions.TruBot
             this.EntityName = "TruBot Settings";
         }
 
+        public override string GetEntityShortName()
+        {
+            return EntityName;
+        }
+
         [ORMField] private string baseUrl;
 
         [ORMField] private string username;
