@@ -20,7 +20,7 @@ namespace Decisions.TruBot.Steps
         private const string TRUBOT_RESPONSE = "TruBot Status Response";
         
         private const string BOT_ID = "BotId";
-        private const string WAIT_TIME = "Seconds Between Status Updates";
+        private const string WAIT_TIME = "Minutes Between Status Checks";
         
         [WritableValue]
         private string? overrideBaseUrl;
@@ -37,7 +37,7 @@ namespace Decisions.TruBot.Steps
             TruBotSettings settings = ModuleSettingsAccessor<TruBotSettings>.GetSettings();
             
             int botId = (int)data.Data[BOT_ID];
-            int waitTime = ((int)data.Data[WAIT_TIME] >= 15) ? (int)data.Data[WAIT_TIME] : 15;
+            int waitTime = ((int)data.Data[WAIT_TIME] >= 1) ? (int)data.Data[WAIT_TIME] : 1;
 
             string baseUrl = OverrideBaseUrl ?? settings.GetBotUrl();
             string url = $"{baseUrl}/RunBot";

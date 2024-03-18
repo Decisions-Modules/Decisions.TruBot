@@ -38,7 +38,7 @@ namespace Decisions.TruBot.Data
             }
             else
             {
-                ThreadJobService.AddToQueue(DateTime.Now.AddSeconds(RunningProcess.WaitTime), this, Id);
+                ThreadJobService.AddToQueue(DateTime.Now.AddMinutes(RunningProcess.WaitTime), this, Id);
             }
         }
 
