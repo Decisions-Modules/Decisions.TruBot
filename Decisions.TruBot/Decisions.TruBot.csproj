@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DecisionsSDK" Version="8.16.0" />
+    <PackageReference Include="DecisionsSDK" Version="9.0.3-beta" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="8.0.0" />
   </ItemGroup>

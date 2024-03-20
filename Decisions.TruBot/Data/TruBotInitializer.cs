@@ -9,8 +9,6 @@ namespace Decisions.TruBot.Data
         
         public void Initialize()
         {
-            TruBotAssignmentHelper.InitializeAssignmentComponents();
-            
             TruBotProcess[] processes = TruBotProcess.GetRunningTruBotProcesses();
 
             if (processes.Length > 0)

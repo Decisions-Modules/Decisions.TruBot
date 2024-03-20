@@ -43,11 +43,11 @@ namespace Decisions.TruBot.Data
 
         public string StepTrackingId { get; set; }
         
+        public string ProjectId { get; set; }
+        
         public string UsedUrl { get; set; }
         
         public string? JobExecutionId { get; set; }
-        
-        public string AssignmentId { get; set; }
         
         public int WaitTime { get; set; }
 
@@ -90,7 +90,6 @@ namespace Decisions.TruBot.Data
             ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
             botProcessOrm.Store(botProcess);
             
-            TruBotAssignmentHelper.CreateAssignment(botProcess);
             TruBotThreadJob.StartThreadJob(botProcess);
         }
     }

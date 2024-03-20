@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ExportDescription xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Name>TruBot</Name>
-  <ParentFolderId>JOBS AND EVENTS FOLDER</ParentFolderId>
-  <ParentFolderPath>System/Jobs and Events</ParentFolderPath>
+  <ParentFolderId>INTEGRATIONS FOLDER</ParentFolderId>
+  <ParentFolderPath>System/Integrations</ParentFolderPath>
   <TypeName>DecisionsFramework.ServiceLayer.Services.Folder.Folder</TypeName>
   <ShortTypeName>Designer Folder</ShortTypeName>
   <Id>01HNB8V81CT9RSWA6ZB6S9ZRT0</Id>
   <ExportedBy>shawn.lirette@decisions.com</ExportedBy>
-  <ExportedOn>2024-02-20T16:01:58.2065808-05:00</ExportedOn>
-  <PlatformVersion>8.18.0.72888</PlatformVersion>
+  <ExportedOn>2024-03-20T15:39:24.1654406-04:00</ExportedOn>
+  <PlatformVersion>9.0.0.73296</PlatformVersion>
   <DependsOn />
   <DependsOnAssemblies />
   <StructureImport>false</StructureImport>
   <DependsOnStructures>false</DependsOnStructures>
-  <Size>695</Size>
-  <Data>SnNvblN0b3JhZ2VQSwMEFAAACAgAPYBUWHH9bQs0AgAAGAQAAAsAAABKc29uU3RvcmFnZYxTXW+jMBD8K4hnRKFEOVIp0pVA1K+EKHA5tS8nBzbBqrEj2ySKqv73WxMg9/HSF6Mdz47HO+bD9uy7D3tjll95ukqjp2SW23eeg+XrKlneLxL7zo6hoIoKruaS1HAS8t3NQB5pAS/kDLIvlDsXrMT68nGs//scawPSQNPQ9UPXcz3HmjVMNxKmHBotCXOsVbNltHiGcy7egU95w5jt2KSsKacKKVrIDYVTytkZze3MHmM52auYaIKIAfh5VlFWSuCxWAr9QI6QQdFIqk2PNhRZVPQIZS/RlagBCHkIFYRHsBZCd5SiU/xHrN2SgH1lZGpVkRN3GZWgNXwv+xm4haivzJR3B42DcHTrB7eTIBx/u8XFnAxco/ZljI8xsp7SKLPul7GVbJJlnlnz9CVO1gNzieNFVi6bSJi77drOCCpypELm5wN8IcUfmjKqKcY4E/VBcJRWFwuDYuvF8x+WUbgJ/Vk+WWc/78dv0TibvK1zb+Cl0nRdpnhBjIfOZQyK7jlI6yqOCa+IrnAzOysN9c2T2CqL8NJKjsbGzXCziqjsgBfZUSjNI+jCNHCzvQiqHqNlCbwLiPIKMK8VyJqqdgodi6qkpHomDn2UVPXZdv4GuLU2gKa5FmXr5Au599Q/Yh95I380DkaBH/rBBDkclKZ8/wJHYMgJEFJ/eXk0rzV7zfJkcX0CqhKnR55LgM6VarYL4E0ffzvyHcG/DPdiYKCHR99VKW+z+nRsc4D3+flbAAEGAFBLAQIzABQAAAgIAD2AVFhx/W0LNAIAABgEAAALAAAAAAAAAAAAAAAAAAAAAABKc29uU3RvcmFnZVBLBQYAAAAAAQABADkAAABdAgAAAAA=</Data>
+  <Size>698</Size>
+  <Data>SnNvblN0b3JhZ2VQSwMEFAAACAgA7Hx0WOmeMEE3AgAAKgQAAAsAAABKc29uU3RvcmFnZYxTXW/iMBD8KyjPEQ1QOKhU6QhJr7krBJEcp/blZJKFWHVsZDtwqOK/3zpx0vt4qZAS7ezseLwT3hzPuXtztubxM43Xsf81XKTOnedi+bwOV/Nl6Nw5AWRUUcHVgyQlnIV87ScgTzSDJ3IB2Raq/yBYjnXzcnv/z7m9LUgD3c/6nvm5vUXFdCXhnkOlJWFub13tGM2+wSUVr8DvecWY4zokLymnCilayC2Fc8zZBb3tTY+xlBxUQDRBxAD8sigoyyXwQKyEfiQnSCCrJNVmRhuKzAp6gryVsCVqAEIeQhnhPmyE0JaSWcV/xOqWBJzLfVOrgpx5n1EJWsPnvF1BPxPlOzPm9qDJaHo7HIyGs9F08mmID3MycI3azRajAFnRKg2/bOZpFK+S3kP8FISbjrbC1SIllZUvzMX29ZgPBTlRIdPLET6Q4HdNGdUUI1yI8ig4Sqvm/E6xNuINHlf+dDsdLNLZJvkxn7z4k2T2skm9jhdLM9WssEGMB+syAEUPHGTvXRzjXRNdYDO5KA3lTcQ1HDBmY/emu1ZBVHLEW+wp5CZ+G6OBq12jplqM5jlwGw3lBWBSa5AlVfUKLIuqMKd6IY5tiFS1qVpzHVz76kAzXIq8dvKBxFvqH4FPxrdjb+CNh+MRRo4cDkpTfniCEzDkjBBSf3mJzHeaPCdpuHzPXxXiHPFUAlhXqtotgVdt9vW+9wT/X9gLgIHuPndbxdwGFdm0w19HITXZsUbyih0c8a7X3wIMAFBLAQIzABQAAAgIAOx8dFjpnjBBNwIAACoEAAALAAAAAAAAAAAAAAAAAAAAAABKc29uU3RvcmFnZVBLBQYAAAAAAQABADkAAABgAgAAAAA=</Data>
   <RequiresApproval>false</RequiresApproval>
   <OverridingImport>false</OverridingImport>
   <ModuleName>Decisions.TruBot</ModuleName>
   <ImportOrder>103</ImportOrder>
-  <ModifiedOn>2024-02-20T15:57:43.4318139-05:00</ModifiedOn>
+  <ModifiedOn>2024-03-20T15:23:30.5253238-04:00</ModifiedOn>
   <BehaviorTypeName>DecisionsFramework.ServiceLayer.Utilities.ComponentsFolder</BehaviorTypeName>
   <AllTagsData />
   <TagData />

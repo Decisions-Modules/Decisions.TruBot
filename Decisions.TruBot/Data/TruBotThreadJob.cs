@@ -70,8 +70,6 @@ namespace Decisions.TruBot.Data
         {
             string queueName = SetQueueName(process.Id);
             
-            TruBotAssignmentHelper.CompleteAssignment(process);
-            
             ResultData resultData = new ResultData();
             resultData.Add("TruBot Status Response", statusResponse);
             
