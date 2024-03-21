@@ -65,7 +65,9 @@ namespace Decisions.TruBot.Steps
                     StepTrackingId = data.StepTrackingID,
                     UsedUrl = baseUrl,
                     JobExecutionId = response.JobExecutionId,
-                    WaitTime = waitTime
+                    WaitTime = waitTime,
+                    ProjectId = DecisionsFramework.ServiceLayer.Services.Projects.ProjectUtility.
+                        GetProjectOfEntity(FlowEngine.CurrentFlow.Id, true, false)?.FolderID ?? string.Empty
                 });
             }
             catch (Exception ex)

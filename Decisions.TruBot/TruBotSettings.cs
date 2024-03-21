@@ -36,9 +36,13 @@ namespace Decisions.TruBot
 
         [ORMField] private string password;
 
-        [ORMField] [PropertyHidden] private string token;
+        [ORMField]
+        [PropertyHidden]
+        private string token;
 
-        [ORMField] [PropertyHidden] private string sid;
+        [ORMField]
+        [PropertyHidden]
+        private string sid;
 
         [PropertyClassification(0, " ", "TruBot Settings")]
         [ReadonlyEditor]

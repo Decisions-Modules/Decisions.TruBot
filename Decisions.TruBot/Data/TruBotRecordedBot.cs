@@ -28,6 +28,9 @@ namespace Decisions.TruBot.Data
         [ORMField]
         public DateTime LastRunOn { get; set; }
         
+        [ORMField]
+        public string ProjectId { get; set; }
+        
         static ORM<TruBotRecordedBot> orm = new();
 
         public TruBotRecordedBot(int botId)

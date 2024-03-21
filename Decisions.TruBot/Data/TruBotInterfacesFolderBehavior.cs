@@ -7,5 +7,10 @@ namespace Decisions.TruBot.Data
         internal const string NAME = "TruBot Interfaces";
         
         internal static string GetTruBotFolderId(string projectId) => $"trubot.{projectId}";
+
+        public override ViewPageData[] GetViewPages(Folder folder)
+        {
+            return base.GetViewPages(folder);
+        }
     }
 }
