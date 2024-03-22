@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ExportDescription xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>TruBot Process Data</Name>
+  <ParentFolderId>01HNB8V81CT9RSWA6ZB6S9ZRT0</ParentFolderId>
+  <ParentFolderPath>System/Integrations/TruBot</ParentFolderPath>
+  <TypeName>DecisionsFramework.ServiceLayer.Services.ConfigurationStorage.ElementRegistration</TypeName>
+  <ShortTypeName>Report Element</ShortTypeName>
+  <Id>01HNB8V8255N10FK49A43202DB</Id>
+  <ExportedBy>shawn.lirette@decisions.com</ExportedBy>
+  <ExportedOn>2024-03-20T15:39:24.0981182-04:00</ExportedOn>
+  <PlatformVersion>9.0.0.73296</PlatformVersion>
+  <DependsOn />
+  <DependsOnAssemblies />
+  <StructureImport>false</StructureImport>
+  <DependsOnStructures>false</DependsOnStructures>
+  <Size>1146</Size>
+  <Data>SnNvblN0b3JhZ2VQSwMEFAAACAgA7Hx0WELboib3AwAA6QkAAAsAAABKc29uU3RvcmFnZYxWbW/iOBD+K4jPCAUoNFSqdLzuptsCIllOt19WJhnAwrEj24GiVf/7jYkTktDqTkiIeebF48fzwp+m03z609yYr9/BcrUcv8wmQfPJaaH4z2q2GL3Nmk/NKYRUUcHVXJIYzkIe2z7IEw3hlVxA5oJqTwTf0X0qiUZrXwtJ9tCeMYiB6zXsqdKZqtW4D9lqbEAa6HnYdsyn1ZikTKcSnjmk6MhajVW6ZTT8AZdAHIE/85SxZqtJeZJqhXm28CNSXZJCESeC1073ItQ6ne+Lsbtxu/3+ouPMfzwMRw+9rtOdjo0bI0otMLHy5duBTMdCt6dEE/t7JQVeWxnEF6kMAX3VQUgdXBKw/mtIEGhYFtDgQNQ3KdKE8j2qdxnip9tAaMLUDXojWtL3KewopyZtq8H4KYu+AQe8DVjqrY4wJs7rmR+MVt4EhTwa5Rr22eVNZogukBUTLHM3F5gLGRONqhd/uTA+ey4kLJDiDWEpKI+/KMGXV3rzVDLvNexAAg/BxvaipVwRfTCvcQIpaZSn+VMy6xraSoHvWidvoA8iypMlPEQKTUqeesVHy++gTIYVIef0E2xOQiy/S0U1JuFxj8zz6Au4Hm/Go8qZVr47FkkvhCklyHQcUAYF5tM4YVAyw9c10oqY4tdY9pVYn8X3OU0S0J/Z1a8aAJ6GpVEAo72xKidZIPWj6op6bP/Cw5uxKksr7PWKUI9dwuphVxIr1Ojz3Ou+WRPVxJuRLqFzypDR+/dnEcjRmUioxfL4iTB6K4l1Wno5I/gakgowORDKq5Td2XlmJpkavtnJ8EBPt9A4QfQhINvaaVXkVYRHiEpP+67fQJaI/ok9iFNXS8E+w/CugHTKQvdCTkSFkibX5OqeRutftaPQDIuv9eaxvtauQWXj8I6kWy/FW4giiCp1mYMVy2wOfgGVSMemGksgR5yrnlI4sQrzidkCiuq7jOuKetnV9Xd0vlJ+rAyTlJGKfDdcqoWp0q3F7ew0o1GaMyKP232IqNvuuLgSH7uu+4gWsYjojhqTU2GSLc3HXnc4QAvgpowi2xpmCzJ4p9oc6yDwOxILoT0ewbu52e3K4oxrZRYTajhSB3LmbUYlaA1/RcUexHBomgDuC7NaTY1ad3Yt1yXH2oKAXtefOe5A8VHzjiFRjAvtuouF3FA4LznL6cBomGTWq960tKU7k2C49v8eDX6NB/7w1zpwCmu7ZrOF3LAbuXFtvYLLLCO0GvTch24HSeq5g2Fv0O85JTpLNoP+w4PrDtxhf9jvurdA48t/8pJH+x+mJBsJeX/nos3DyRZ6QPbKDhIEpsBwYeQeVlpya44dFFE9EUlG6Eeraf7rOB8f/wogwABQSwECMwAUAAAICADsfHRYQtuiJvcDAADpCQAACwAAAAAAAAAAAAAAAAAAAAAASnNvblN0b3JhZ2VQSwUGAAAAAAEAAQA5AAAAIAQAAAAA</Data>
+  <RequiresApproval>false</RequiresApproval>
+  <OverridingImport>false</OverridingImport>
+  <ModuleName>Decisions.TruBot</ModuleName>
+  <ImportOrder>400</ImportOrder>
+  <ModifiedOn>2024-03-20T15:21:26.8959528-04:00</ModifiedOn>
+  <ValidationData />
+  <AllTagsData />
+  <TagData />
+</ExportDescription>
