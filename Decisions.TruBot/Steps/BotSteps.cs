@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using Decisions.TruBot.Api;
 using Decisions.TruBot.Data;
 using DecisionsFramework;
+using DecisionsFramework.Data.ORMapper;
 using DecisionsFramework.Design.Flow;
 using DecisionsFramework.Design.Flow.StepImplementations;
 using DecisionsFramework.Design.Properties;
@@ -196,6 +197,26 @@ namespace Decisions.TruBot.Steps
             {
                 throw new BusinessRuleException("The request to TruBot was unsuccessful.", ex);
             }
+        }
+
+        public void Test()
+        {
+            ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
+            TruBotProcess botProcess = new TruBotProcess
+            {
+                WorkflowName = FlowEngine.CurrentFlow.Name,
+                BotId = 0,
+                BotName = "test",
+                StartTime = new DateTime(),
+                FlowTrackingId = null,
+                StepTrackingId = null,
+                UsedUrl = null,
+                JobExecutionId = "1",
+                WaitTime = 1,
+                ProjectId = DecisionsFramework.ServiceLayer.Services.Projects.ProjectUtility
+                    .GetProjectOfEntity(FlowEngine.CurrentFlow.Id, true, false)?.FolderID ?? string.Empty
+            };
+            botProcessOrm.Store(botProcess);
         }
     }
 }
