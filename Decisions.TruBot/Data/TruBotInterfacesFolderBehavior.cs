@@ -1,4 +1,5 @@
 using DecisionsFramework.ServiceLayer.Services.Folder;
+using DecisionsFramework.ServiceLayer.Utilities;
 
 namespace Decisions.TruBot.Data
 {
@@ -8,9 +9,9 @@ namespace Decisions.TruBot.Data
         
         internal static string GetTruBotFolderId(string projectId) => $"trubot.{projectId}";
 
-        public override ViewPageData[] GetViewPages(Folder folder)
+        public override ViewPageData[] GetViewPages(Folder folder = null)
         {
-            return base.GetViewPages(folder);
+            return base.GetViewPages(FolderService.Instance.GetByID(UserContextHolder.GetCurrent(), "01HPJ54BNTZKMBEHX6A6MCZ7E7"));
         }
     }
 }
