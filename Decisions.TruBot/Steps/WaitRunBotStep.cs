@@ -53,7 +53,8 @@ namespace Decisions.TruBot.Steps
                 string result = TruBotRest.TruBotPost(url, content);
                 TruBotResponse response = TruBotResponse.JsonDeserialize(result);
 
-                TruBotRecordedBot.Create(response.BotId, response.BotName, startTime);
+                string projectFolder = BotSteps.GetTruBotProjectFolderFromFlow();
+                TruBotRecordedBot.Create(response.BotId, response.BotName, startTime, projectFolder);
 
                 TruBotProcess.StartProcess(new TruBotProcess
                 {
@@ -66,8 +67,7 @@ namespace Decisions.TruBot.Steps
                     UsedUrl = baseUrl,
                     JobExecutionId = response.JobExecutionId,
                     WaitTime = waitTime,
-                    ProjectId = DecisionsFramework.ServiceLayer.Services.Projects.ProjectUtility.
-                        GetProjectOfEntity(FlowEngine.CurrentFlow.Id, true, false)?.FolderID ?? string.Empty
+                    EntityFolderID = projectFolder
                 });
             }
             catch (Exception ex)

@@ -28,10 +28,7 @@ namespace Decisions.TruBot.Data
         [ORMField]
         public DateTime LastRunOn { get; set; }
         
-        [ORMField]
-        public string ProjectId { get; set; }
-        
-        static ORM<TruBotRecordedBot> orm = new();
+        private static ORM<TruBotRecordedBot> orm = new();
 
         public TruBotRecordedBot(int botId)
         {
@@ -68,13 +65,13 @@ namespace Decisions.TruBot.Data
             }).FirstOrDefault();
         }
 
-        public static TruBotRecordedBot Create(int botId, string? botName, DateTime startTime)
+        public static TruBotRecordedBot Create(int botId, string? botName, DateTime startTime, string projectId)
         {
             ORM<TruBotRecordedBot> recordedBotOrm = new ORM<TruBotRecordedBot>();
             TruBotRecordedBot recordedBot = new TruBotRecordedBot(botId);
             recordedBot.BotName = botName;
             recordedBot.LastRunOn = startTime;
-                
+            recordedBot.EntityFolderID = projectId;
             recordedBotOrm.Store(recordedBot);
 
             return recordedBot;

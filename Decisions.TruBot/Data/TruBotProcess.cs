@@ -39,9 +39,6 @@ namespace Decisions.TruBot.Data
         [ORMField]
         public string WorkflowId { get; set; }
         
-        [ORMField]
-        public string ProjectId { get; set; }
-        
         public string FlowTrackingId { get; set; }
 
         public string StepTrackingId { get; set; }
@@ -73,7 +70,7 @@ namespace Decisions.TruBot.Data
             return orm.Fetch(new WhereCondition[]
             {
                 new FieldWhereCondition("BotId", QueryMatchType.Equals, truBotId)
-            }).FirstOrDefault();
+            }).FirstOrDefault()!;
         }
 
         internal static TruBotProcess[] GetRunningTruBotProcesses()
