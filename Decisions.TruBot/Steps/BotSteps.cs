@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using Decisions.TruBot.Api;
+using Decisions.TruBot.Behaviors;
 using Decisions.TruBot.Data;
 using DecisionsFramework;
 using DecisionsFramework.Design.Flow;
@@ -30,8 +31,9 @@ namespace Decisions.TruBot.Steps
                 DateTime startTime = DateTime.Now;
                 string result = TruBotRest.TruBotPost(url, content);
                 TruBotResponse response = TruBotResponse.JsonDeserialize(result);
-                
-                TruBotRecordedBot.Create(response.BotId, response.BotName, startTime);
+
+                string projectFolder = GetTruBotProjectFolderFromFlow();
+                TruBotRecordedBot.Create(response.BotId, response.BotName, startTime, projectFolder);
 
                 return response;
             }
@@ -197,5 +199,10 @@ namespace Decisions.TruBot.Steps
                 throw new BusinessRuleException("The request to TruBot was unsuccessful.", ex);
             }
         }
+
+        public static string GetTruBotProjectFolderFromFlow() => 
+            TruBotInterfacesFolderBehavior.GetTruBotFolderId(
+                FlowEngine.CurrentFlow.GetElementRegistration()
+                    .GetProjectId());
     }
 }

@@ -1,7 +1,8 @@
+using Decisions.TruBot.Data;
 using DecisionsFramework;
 using DecisionsFramework.ServiceLayer;
 
-namespace Decisions.TruBot.Data
+namespace Decisions.TruBot
 {
     public class TruBotInitializer : IInitializable
     {
