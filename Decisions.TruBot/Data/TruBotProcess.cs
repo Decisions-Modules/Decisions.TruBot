@@ -1,3 +1,4 @@
+using Decisions.TruBot.Api;
 using DecisionsFramework.Data.ORMapper;
 using DecisionsFramework.Design.Properties;
 using DecisionsFramework.ServiceLayer;
@@ -89,6 +90,16 @@ namespace Decisions.TruBot.Data
             botProcessOrm.Store(botProcess);
             
             TruBotThreadJob.StartThreadJob(botProcess);
+        }
+        
+        public static void CompleteProcess(TruBotProcess botProcess, JobStatusResponse statusResponse)
+        {
+            ORM<TruBotProcess> botProcessOrm = new ORM<TruBotProcess>();
+            
+            botProcess.StepDuration = (DateTime.Now - botProcess.StartTime).ToString();
+            botProcess.Status = statusResponse.Status ?? "Error";
+            
+            botProcessOrm.Store(botProcess);
         }
     }
 }

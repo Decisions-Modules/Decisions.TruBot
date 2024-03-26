@@ -32,7 +32,9 @@ namespace Decisions.TruBot.Data
 
             log.Debug($"{Id} status: {statusResponse.Status}");
 
-            if ((statusResponse.Status != TruBotConstants.STATUS_DEPLOYING && statusResponse.Status != TruBotConstants.STATUS_IN_PROGRESS))
+            if ((statusResponse.Status != TruBotConstants.STATUS_DEPLOYING
+                 && statusResponse.Status != TruBotConstants.STATUS_IN_PROGRESS
+                 && statusResponse.Status != TruBotConstants.STATUS_STARTED))
             {
                 CompleteThreadJob(RunningProcess, statusResponse);
             }
@@ -72,6 +74,8 @@ namespace Decisions.TruBot.Data
             
             ResultData resultData = new ResultData();
             resultData.Add("TruBot Status Response", statusResponse);
+
+            TruBotProcess.CompleteProcess(process, statusResponse);
             
             ThreadJobService.CurrentJob.State = JobState.Completed;
             ThreadJobService.RemoveFromQueue(process.Id);
