@@ -30,14 +30,12 @@ namespace Decisions.TruBot.Data
         
         private static ORM<TruBotRecordedBot> orm = new();
 
-        public TruBotRecordedBot(int botId)
+        public TruBotRecordedBot(int botId, string projectId)
         {
-            TruBotRecordedBot? bot = GetTruBotRecordByBotId(botId);
+            TruBotRecordedBot? bot = GetTruBotRecordByIds(botId, projectId);
 
             if (bot != null)
             {
-                bot = GetTruBotRecordByBotId(botId);
-
                 Id = bot.Id;
                 BotId = botId;
                 BotName = bot.BotName;
@@ -57,18 +55,19 @@ namespace Decisions.TruBot.Data
             return orm.Fetch(truBotProcessId);
         }
         
-        internal static TruBotRecordedBot? GetTruBotRecordByBotId(int truBotId)
+        internal static TruBotRecordedBot? GetTruBotRecordByIds(int truBotId, string projectId)
         {
             return orm.Fetch(new WhereCondition[]
             {
-                new FieldWhereCondition("bot_id", QueryMatchType.Equals, truBotId)
+                new FieldWhereCondition("bot_id", QueryMatchType.Equals, truBotId),
+                new FieldWhereCondition("entity_folder_id", QueryMatchType.Equals, projectId)
             }).FirstOrDefault();
         }
 
         public static TruBotRecordedBot Create(int botId, string? botName, DateTime startTime, string projectId)
         {
             ORM<TruBotRecordedBot> recordedBotOrm = new ORM<TruBotRecordedBot>();
-            TruBotRecordedBot recordedBot = new TruBotRecordedBot(botId);
+            TruBotRecordedBot recordedBot = new TruBotRecordedBot(botId, projectId);
             recordedBot.BotName = botName;
             recordedBot.LastRunOn = startTime;
             recordedBot.EntityFolderID = projectId;
