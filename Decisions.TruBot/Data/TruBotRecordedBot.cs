@@ -32,7 +32,7 @@ namespace Decisions.TruBot.Data
 
         public TruBotRecordedBot(int botId, string projectId)
         {
-            TruBotRecordedBot? bot = GetTruBotRecordByIds(botId, projectId);
+            TruBotRecordedBot? bot = GetTruBotRecordById(botId, projectId);
 
             if (bot != null)
             {
@@ -55,7 +55,7 @@ namespace Decisions.TruBot.Data
             return orm.Fetch(truBotProcessId);
         }
         
-        internal static TruBotRecordedBot? GetTruBotRecordByIds(int truBotId, string projectId)
+        internal static TruBotRecordedBot? GetTruBotRecordById(int truBotId, string projectId)
         {
             return orm.Fetch(new WhereCondition[]
             {
