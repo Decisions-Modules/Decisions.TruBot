@@ -13,6 +13,5 @@ namespace Decisions.TruBot.DataSources
         {
             this.ExposeActions = true;
         }
-        
     }
 }
