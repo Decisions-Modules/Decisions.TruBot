@@ -1,6 +1,9 @@
 using DecisionsFramework.Data.ORMapper;
 using DecisionsFramework.Design.Properties;
 using DecisionsFramework.ServiceLayer;
+using DecisionsFramework.ServiceLayer.Actions;
+using DecisionsFramework.ServiceLayer.Actions.Common;
+using DecisionsFramework.ServiceLayer.Utilities;
 using DecisionsFramework.Utilities;
 
 namespace Decisions.TruBot.Data
@@ -74,6 +77,15 @@ namespace Decisions.TruBot.Data
             recordedBotOrm.Store(recordedBot);
 
             return recordedBot;
+        }
+        
+        public override BaseActionType[] GetActions(AbstractUserContext userContext, EntityActionType[] types)
+        {
+            return new BaseActionType[]
+            {
+                new EditEntityAction(GetType(), "Edit", null),
+                new DeleteEntityAction(GetType(), "Delete", null),
+            };
         }
     }
 }
