@@ -5,7 +5,7 @@ namespace Decisions.TruBot.Behaviors
     public class TruBotInterfacesFolderBehavior : DefaultFolderBehavior, ISystemFolderBehavior
     {
         internal const string NAME = "TruBot Interfaces";
-        private const string TRUBOT_INTERFACES_PAGE_ID = "01HXAKJAK56W3ZJ9RVK3X489XZ";
+        private const string TRUBOT_INTERFACES_PAGE_ID = "01HPJ3FHTY2HD3SDWX5JNRZ0YN";
         
         internal static string GetTruBotFolderId(string projectId) => $"trubot.{projectId}";
 
