@@ -164,33 +164,6 @@ namespace Decisions.TruBot
             return issues.ToArray();
         }
 
-        public override BaseActionType[] GetActions(AbstractUserContext userContext, EntityActionType[] types)
-        {
-            List<BaseActionType> actions = new List<BaseActionType>();
-
-            Account userAccount = userContext.GetAccount();
-
-            FolderPermission permission = FolderService.GetAccountEffectivePermissionInternal(
-                new SystemUserContext(), this.EntityFolderID, userAccount.AccountID);
-
-            bool canAdministrate =
-                FolderPermission.CanAdministrate == (FolderPermission.CanAdministrate & permission) ||
-                userAccount.GetUserRights<PortalAdministratorModuleRight>() != null ||
-                userAccount.IsAdministrator();
-
-            if (canAdministrate)
-            {
-                actions.Add(new EditEntityAction(typeof(TruBotSettings), "Edit", "Edits TruBot Module Settings")
-                {
-                    IsDefaultGridAction = true,
-                    OkActionName = "SAVE",
-                    CancelActionName = null
-                });
-            }
-
-            return actions.ToArray();
-        }
-
         private void SaveSettings(AbstractUserContext userContext, object obj)
         {
             TruBotSettings settings = obj as TruBotSettings;
