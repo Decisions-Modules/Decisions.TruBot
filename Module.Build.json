@@ -16,7 +16,7 @@
         "./CustomModuleImages/*.*"
       ]
     },
-    "Version": "9.21",
+    "Version": "9.3.0",
     "ImagePath": "./image.png",
     "Description": ""
 }
